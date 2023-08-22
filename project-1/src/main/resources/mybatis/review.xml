@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 매퍼 파일 -->
+<mapper namespace="com.kosmo.springapp.service.ReviewMapper">
+	<insert id="registerReview" parameterType="reviewDto">
+		INSERT INTO REVIEWTABLE(R_ID,TAKETIME,STARSCORE,EFFECT,NOEFFECT,CONTENT,R_PRODUCTNO,R_REGIDATE) VALUES (#{r_id},#{takeTime},#{starScore},#{effect},#{noEffect},#{content},#{r_productNo},SYSDATE)
+	</insert>
+	<select id="selectFoodOneByNo" parameterType="Map" resultType="functionalFoodListDto">
+ 		SELECT * FROM foodtable WHERE no=#{no}
+	</select>
+	<select id="selectReviewByFoodNo" parameterType="Map" resultType="reviewDto">
+	SELECT *
+	FROM (
+	    SELECT t.*, m.GENDER, m.BIRTH, ROWNUM AS row_NUM
+	    FROM (
+	        SELECT * FROM REVIEWTABLE
+	        WHERE R_PRODUCTNO = #{no}
+	        ORDER BY R_REGIDATE DESC
+	    ) t
+	    LEFT JOIN MEMBER m ON t.R_ID = m.ID
+	)
+	WHERE row_num &gt;= #{current} AND row_num &lt; #{current} + 3
+	ORDER BY row_NUM
+	</select>
+	<select id="selectTotalReviewInfoStarScoreAverage" parameterType="int" resultType="float">
+		SELECT COALESCE(ROUND(AVG(starscore),1), 0) AS average_value
+		FROM reviewtable
+		WHERE R_PRODUCTNO = #{no}
+	</select>
+	
+	<select id="selectTotalReviewInfoStarScore" parameterType="int" resultType="Map">
+		SELECT 
+		  COUNT(CASE WHEN starscore = 1 THEN 1 END) AS count_1,
+		  COUNT(CASE WHEN starscore = 2 THEN 1 END) AS count_2,
+		  COUNT(CASE WHEN starscore = 3 THEN 1 END) AS count_3,
+		  COUNT(CASE WHEN starscore = 4 THEN 1 END) AS count_4,
+		  COUNT(CASE WHEN starscore = 5 THEN 1 END) AS count_5
+		FROM reviewtable
+		WHERE R_PRODUCTNO = #{no}
+	</select>
+	
+	<select id="selectTotalReviewInfoEffectList" parameterType="int" resultType="Map">
+		SELECT value, get_effect_count(#{no}, value) AS count
+		FROM (
+		  SELECT '효과가 없었어요' AS value FROM DUAL UNION ALL
+		  SELECT '구내염 개선' FROM DUAL UNION ALL
+		  SELECT '감기 덜 걸림' FROM DUAL UNION ALL
+		  SELECT '피로 개선' FROM DUAL UNION ALL
+		  SELECT '피부상태 개선' FROM DUAL
+		)
+		WHERE ROWNUM &lt;= 4
+		ORDER BY count DESC
+	</select>
+	<select id="selectTotalReviewInfoNoEffectList" parameterType="int" resultType="Map">
+		SELECT value, get_no_effect_count(#{no}, value) AS count
+		FROM (
+		  SELECT '부작용이 없었어요' AS value FROM DUAL UNION ALL
+		  SELECT '변비' FROM DUAL UNION ALL
+		  SELECT '설사' FROM DUAL UNION ALL
+		  SELECT '어지러움' FROM DUAL 
+		)
+		WHERE ROWNUM &lt;= 4
+		ORDER BY count DESC
+	</select>
+	<select id="selectReviewByUserId" parameterType="String" resultType="Map">
+		SELECT FOODTABLE.NO NO,PRODUCTNAME,content,R_REGIDATE,FOODTABLE.IMGURL IMGURL,STARSCORE
+                          FROM REVIEWTABLE RIGHT OUTER JOIN FOODTABLE 
+                          ON REVIEWTABLE.R_PRODUCTNO =FOODTABLE.NO  
+                          WHERE R_ID = #{userId}
+                          GROUP BY FOODTABLE.NO,PRODUCTNAME,content,R_REGIDATE,FOODTABLE.IMGURL,STARSCORE
+	</select>
+	
+	<delete id="deleteReview" parameterType="Map">
+		DELETE FROM REVIEWTABLE WHERE R_ID=#{id} AND R_PRODUCTNO=#{no}
+	</delete>
+	
+	<select id="selectReviewByNo" parameterType="int" resultType="int">
+		SELECT count(*) FROM REVIEWTABLE WHERE r_productno=#{no}
+	</select>
+	
+	<select id="androidSelectReviewByFoodNo" parameterType="Map" resultType="reviewDto">
+	SELECT * 
+		FROM (
+		   SELECT t.*, ROWNUM AS row_NUM, m.GENDER, m.BIRTH
+            FROM (
+                SELECT * FROM REVIEWTABLE
+                WHERE R_PRODUCTNO = #{no}
+            ) t
+            LEFT JOIN MEMBER m ON t.R_ID = m.ID
+            order by row_NUM DESC
+		)
+		WHERE row_num &gt;= #{current} AND row_num &lt; #{current} + 2
+		order by row_NUM DESC
+	</select>
+</mapper>

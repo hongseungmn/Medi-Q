@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kosmo.springapp.magazine.service.impl.MagazineSelectMapper">
+	<!-- 영양제 상식 -->
+	<select id="getTitleCommonSense" resultType="String">
+		SELECT M_SUBTITLE FROM MAGAZINE WHERE M_SUBTITLE LIKE '%상식' ORDER BY M_NO
+	</select>
+	<!-- 영양소 A to Z -->
+	<select id="getTitleNutrient" resultType="String">
+		SELECT M_SUBTITLE FROM MAGAZINE WHERE M_SUBTITLE LIKE '영양소%' ORDER BY M_NO
+	</select>
+	<!-- 영양제 레시피 -->
+	<select id="getTitleRecipe" resultType="String">
+		SELECT M_SUBTITLE FROM MAGAZINE WHERE M_SUBTITLE LIKE '%레시피' ORDER BY M_NO
+	</select>
+	<!-- 영양제 팩트체크 -->
+	<select id="getTitleTrue" resultType="String">
+		SELECT M_SUBTITLE FROM MAGAZINE WHERE M_SUBTITLE LIKE '%팩트체크' ORDER BY M_NO
+	</select>
+	<!-- Health & Life -->
+	<select id="getTitleHealth" resultType="String">
+		SELECT M_SUBTITLE FROM MAGAZINE WHERE M_SUBTITLE LIKE 'Health%' ORDER BY M_NO
+	</select>
+
+
+
+
+
+
+	<!-- 조회수로 Top6 가져오기 -->
+</mapper>

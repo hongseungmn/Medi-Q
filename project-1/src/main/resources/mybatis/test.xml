@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 매퍼 파일 -->
+<mapper namespace="com.kosmo.springapp.service.LoginMapper">
+	<select id="findByIdAndPwd" parameterType="Map" resultType="boolean">
+		SELECT COUNT(*) FROM MEMBER WHERE ID=#{id} AND PASSWORD=#{password}
+	</select>
+	
+	<select id="checkById" parameterType="Map" resultType="boolean">
+		SELECT COUNT(*) FROM MEMBER WHERE ID=#{id}
+	</select>
+	
+	<select id="findMember" parameterType="String" resultType="memberDto">
+		SELECT * FROM MEMBER WHERE ID=#{id}
+	</select>
+	
+	<insert id="save" parameterType="memberDto">
+		INSERT INTO MEMBER VALUES(#{id},#{name},#{password},#{birth},#{gender},#{email},SYSDATE,'Y',DEFAULT,'N',DEFAULT,'N')
+	</insert>
+	
+	<select id="searchIdNPwd" parameterType="Map" resultType="memberDto">
+		<if test="mode eq 'ID'">
+			SELECT * FROM MEMBER WHERE EMAIL=#{email} AND NAME=#{name}
+		</if>
+		<if test="mode eq 'PWD'">
+			SELECT * FROM MEMBER WHERE EMAIL=#{email} AND ID=#{id} 
+		</if>
+	</select>
+	
+	<insert id="saveSocial" parameterType="Map">
+		<if test="site eq 'kakao'">
+			INSERT INTO MEMBER VALUES(#{email},DEFAULT,DEFAULT,DEFAULT,#{gender},#{email},SYSDATE,'Y',DEFAULT,'N',#{site},'Y')
+		</if>
+		<if test="site eq 'naver'">
+			INSERT INTO MEMBER VALUES(#{email},#{name},DEFAULT,#{birth},#{gender},#{email},SYSDATE,'Y',DEFAULT,'N',#{site},'Y')
+		</if>
+	</insert>
+	
+	<select id="checkBySocial" parameterType="Map" resultType="int">
+		SELECT COUNT(*) FROM MEMBER WHERE ID=#{email}
+	</select>
+	
+	<select id="checkByPassword" parameterType="Map" resultType="boolean">
+		SELECT COUNT(*) FROM MEMBER WHERE ID=#{id} AND PASSWORD=#{password}
+	</select>
+	
+	<update id="update" parameterType="Map">
+		UPDATE MEMBER SET NAME=#{name},PASSWORD=#{password},BIRTH=#{birth},GENDER=#{gender},EMAIL=#{email} WHERE ID=#{id}
+	</update>
+	
+	<update id="delete" parameterType="String">
+		UPDATE MEMBER SET ACTIVE='N',INACTIVE_DATE=SYSDATE WHERE ID=#{id}
+	</update>
+	
+	<insert id="saveProfImg" parameterType="profImgDto">
+		INSERT INTO PROFILE_IMAGE VALUES(SEQ_PROFILE_IMAGE.NEXTVAL,#{id},#{pi_Path},#{pi_Filename},#{pi_Ext})
+	</insert>
+	
+	<update id="updateProfImg" parameterType="memberDto">
+		UPDATE MEMBER SET PROF_IMG_FL=#{prof_Img_Fl} WHERE ID=#{id}
+	</update>
+	
+	<select id="findProfImg" parameterType="String" resultType="profImgDto">
+		SELECT * FROM PROFILE_IMAGE WHERE ID=#{id}
+	</select>
+	
+	<delete id="deleteProfImg" parameterType="String">
+		DELETE FROM PROFILE_IMAGE WHERE ID=#{id}
+	</delete>
+</mapper>

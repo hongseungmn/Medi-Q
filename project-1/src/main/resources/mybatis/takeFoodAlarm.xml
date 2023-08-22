@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 매퍼 파일 -->
+<mapper namespace="com.kosmo.springapp.service.TakeFoodAlarmMapper">
+
+	<select id="selectTakeFoodAlarm" parameterType="Map" resultType="Map">
+		SELECT * FROM TAKE_FOOD_ALARM WHERE ID=#{id} AND FOODNAME=#{foodname}
+	</select>
+	
+	<select id="selectAllAlarm" parameterType="String" resultType="Map">
+		SELECT * FROM TAKE_FOOD_ALARM WHERE ID=#{id}
+	</select>
+	
+	<insert id="insertTakeFoodAlarm" parameterType="Map">
+		INSERT INTO TAKE_FOOD_ALARM VALUES(#{id},#{foodname},#{weekly},#{alarm_time},#{take_pill},DEFAULT)
+	</insert>
+	
+	<update id="updateTakeFoodAlarm" parameterType="Map">
+		UPDATE TAKE_FOOD_ALARM SET WEEKLY=#{weekly},ALARM_TIME=#{alarm_time},TAKE_PILL=#{take_pill} WHERE ID=#{id} AND FOODNAME=#{foodname}
+	</update>
+	
+	<delete id="deleteTakeFoodAlarm" parameterType="Map">
+		DELETE FROM TAKE_FOOD_ALARM WHERE ID=#{id} AND FOODNAME=#{foodname}
+	</delete>
+	
+	
+</mapper>

@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- NutrientSelectMapper.xml -->
+
+<mapper namespace="com.kosmo.springapp.nutrient.service.impl.NutrientSelectMapper">
+	<!-- 비타민 이름 -->
+	<select id="getVitaminName" resultType="String">
+		SELECT N_NAME FROM NUTRIENT WHERE N_NAME LIKE '%비타민%' OR N_NAME LIKE '%베타카로틴%' ORDER BY N_NO
+	</select>
+	<!-- 미네랄 이름 -->
+	<select id="getETCName" resultType="String">
+		SELECT N_NAME FROM NUTRIENT WHERE N_NAME NOT LIKE '%비타민%' AND N_NAME NOT LIKE'%베타카로틴%' ORDER BY N_NO
+	</select>
+	<!-- 기능성원료 이름 -->
+	<select id="getIngredientName" resultType="String">
+		SELECT I_NAME FROM INGREDIENT ORDER BY I_NAME
+	</select>
+	<!-- 선택한 영양소의 관련 건강고민 -->
+	<select id="getN_FUNCbyVitaminName" parameterType="String" resultType="String">
+	    SELECT N_FUNC FROM NUTRIENT WHERE N_NAME = #{name}
+	</select>
+	<!-- 선택한 영양소의 상세설명 -->
+	<select id="getN_DESCbyVitaminName" parameterType="String" resultType="String">
+	    SELECT N_DESC FROM NUTRIENT WHERE N_NAME = #{name}
+	</select>
+	<!-- 선택한 영양소의 남성 권장섭취량 -->
+	<select id="getN_DRI_MbyVitaminName" parameterType="String" resultType="String">
+	    SELECT N_DRI_M FROM NUTRIENT WHERE N_NAME = #{name}
+	</select>
+	<!-- 선택한 영양소의 여성 권장섭취량 -->
+	<select id="getN_DRI_FbyVitaminName" parameterType="String" resultType="String">
+	    SELECT N_DRI_F FROM NUTRIENT WHERE N_NAME = #{name}
+	</select>
+	<!-- 선택한 영양소의 남성 상한섭취량 -->
+	<select id="getN_UL_MbyVitaminName" parameterType="String" resultType="String">
+	    SELECT N_UL_M FROM NUTRIENT WHERE N_NAME = #{name}
+	</select>
+	<!-- 선택한 영양소의 여성 상한섭취량 -->
+	<select id="getN_UL_FbyVitaminName" parameterType="String" resultType="String">
+	    SELECT N_UL_F FROM NUTRIENT WHERE N_NAME = #{name}
+	</select>
+	<!-- 선택한 영양소의 결핍시 증상 -->
+	<select id="getN_LACKbyVitaminName" parameterType="String" resultType="String">
+	    SELECT N_LACK FROM NUTRIENT WHERE N_NAME = #{name}
+	</select>
+	<!-- 선택한 영양소의 주의사항 -->
+	<select id="getN_CAUTIONbyVitaminName" parameterType="String" resultType="String">
+	    SELECT N_CAUTION FROM NUTRIENT WHERE N_NAME = #{name}
+	</select>
+	<!-- 선택한 영양소의 섭취 음식 -->
+	<select id="getN_FOODNbyVitaminName" parameterType="String" resultType="String">
+	    SELECT N_FOOD FROM NUTRIENT WHERE N_NAME = #{name}
+	</select>
+	
+	<!-- 선택한 원료의 관련 건강고민 -->
+	<select id="getI_FUNCbyIngredientName" parameterType="String" resultType="String">
+	    SELECT I_FUNC FROM INGREDIENT WHERE I_NAME = #{name}
+	</select>
+	<!-- 선택한 원료의 권장섭취량 -->
+	<select id="getI_DRIbyIngredientName" parameterType="String" resultType="String">
+	    SELECT I_DRI FROM INGREDIENT WHERE I_NAME = #{name}
+	</select>
+	<!-- 선택한 원료의 상한섭취량 -->
+	<select id="getI_ULbyIngredientName" parameterType="String" resultType="String">
+	    SELECT I_UL FROM INGREDIENT WHERE I_NAME = #{name}
+	</select>
+	<!-- 선택한 원료의 상세설명 -->
+	<select id="getI_DESCbyIngredientName" parameterType="String" resultType="String">
+	    SELECT I_DESC FROM INGREDIENT WHERE I_NAME = #{name}
+	</select>
+	<!-- 선택한 원료의 주의사항 -->
+	<select id="getI_CAUTIONbyIngredientName" parameterType="String" resultType="String">
+	    SELECT I_CAUTION FROM INGREDIENT WHERE I_NAME = #{name}
+	</select>
+	
+	<!-- 5대영양소 추천 영양제 가져오기 -->
+	<select id="getProductNameNImgUrlFromFoodtableByN" parameterType="String" resultType="Map">
+		SELECT *
+		FROM (
+		    SELECT PRODUCTNAME, IMGURL, F_VIEW, NO
+		    FROM (
+		        SELECT ft.PRODUCTNAME, ft.IMGURL, ft.F_VIEW, ft.NO,
+		            ROW_NUMBER() OVER (PARTITION BY ft.F_VIEW ORDER BY CASE WHEN ft.IMGURL IS NULL THEN 1 ELSE 0 END, ft.IMGURL) AS RN
+		        FROM FOODTABLE ft
+		        WHERE (
+		            ft.NUTRIENT LIKE '%' || (
+		                SELECT N_FINDINGNAME
+		                FROM NUTRIENT
+		                WHERE N_NAME = #{name}
+		            ) || '%'
+		            OR
+		            ft.STANDARD LIKE '%' || (
+		                SELECT N_FINDINGNAME
+		                FROM NUTRIENT
+		                WHERE N_NAME = #{name}
+		            ) || '%'
+		            OR
+		            ft.CAUTION LIKE '%' || (
+		                SELECT N_FINDINGNAME
+		                FROM NUTRIENT
+		                WHERE N_NAME = #{name}
+		            ) || '%'
+		        )
+		        ORDER BY CASE WHEN ft.IMGURL IS NULL THEN 1 ELSE 0 END, ft.IMGURL, ft.F_VIEW DESC
+		    )
+		    ORDER BY F_VIEW DESC
+		) WHERE ROWNUM &lt;= 5
+	</select>
+	
+	<!-- 기능성원료 추천 영양제 가져오기 -->
+	<select id="getProductNameNImgUrlFromFoodtableByI" parameterType="String" resultType="Map">
+		SELECT *
+		FROM (
+		    SELECT PRODUCTNAME, IMGURL, F_VIEW, NO
+		    FROM (
+		        SELECT ft.PRODUCTNAME, ft.IMGURL, ft.F_VIEW, ft.NO,
+		            ROW_NUMBER() OVER (PARTITION BY ft.F_VIEW ORDER BY CASE WHEN ft.IMGURL IS NULL THEN 1 ELSE 0 END, ft.IMGURL) AS RN
+		        FROM FOODTABLE ft
+		        WHERE (
+		            ft.NUTRIENT LIKE '%' || (
+		                SELECT I_FINDINGNAME
+			            FROM INGREDIENT
+			            WHERE I_NAME = #{name}
+		            ) || '%'
+		            OR
+		            ft.STANDARD LIKE '%' || (
+		                SELECT I_FINDINGNAME
+			            FROM INGREDIENT
+			            WHERE I_NAME = #{name}
+		            ) || '%'
+		            OR
+		            ft.CAUTION LIKE '%' || (
+		                SELECT I_FINDINGNAME
+			            FROM INGREDIENT
+			            WHERE I_NAME = #{name}
+		            ) || '%'
+		        )
+		        ORDER BY CASE WHEN ft.IMGURL IS NULL THEN 1 ELSE 0 END, ft.IMGURL, ft.F_VIEW DESC
+		    )
+		    ORDER BY F_VIEW DESC
+		) WHERE ROWNUM &lt;= 5
+	</select>
+	
+	
+	<!-- 추천 영양제로 링크 넘어가기 -->
+	<select id="findNobyFoodName" parameterType="String" resultType="String">
+		SELECT NO
+		FROM FOODTABLE
+		WHERE PRODUCTNAME = #{name}
+	</select>
+	
+	<!-- 조회수 가져오고 증가 -->
+	<!-- 5대 영양소 -->
+	<select id="getN_VIEW" parameterType="String" resultType="int">
+		SELECT N_VIEW FROM NUTRIENT WHERE N_NAME = #{name}
+	</select>
+	
+	<update id="increaseN_VIEW" parameterType="String">
+		UPDATE NUTRIENT SET N_VIEW = N_VIEW + 1 WHERE N_NAME = #{name}
+	</update>
+	
+	<!-- 기능성 원료 -->
+	<select id="getI_VIEW" parameterType="String" resultType="int">
+		SELECT I_VIEW FROM INGREDIENT WHERE I_NAME = #{name}
+	</select>
+	
+	<update id="increaseI_VIEW" parameterType="String">
+		UPDATE INGREDIENT SET I_VIEW = I_VIEW + 1 WHERE I_NAME = #{name}
+	</update>
+
+	<!-- 추천 영양제 -->
+	<select id="getF_VIEW" parameterType="String" resultType="int">
+		SELECT F_VIEW FROM FOODTABLE WHERE PRODUCTNAME = #{name}
+	</select>
+	
+	<update id="increaseF_VIEW" parameterType="String">
+		UPDATE FOODTABLE SET F_VIEW = F_VIEW + 1 WHERE PRODUCTNAME = #{name}
+	</update>
+
+	<!-- 조회수 순서로 Top10 가져오기 -->
+	<select id="getTop10" resultType="String">
+	    SELECT NAME
+	    FROM (
+	        SELECT NAME, N_VIEW, I_VIEW
+	        FROM (
+	            SELECT
+	                CASE
+	                    WHEN N.N_NAME IS NOT NULL AND I.I_NAME IS NOT NULL THEN
+	                        CASE
+	                            WHEN N.N_VIEW &gt;= I.I_VIEW THEN N.N_NAME
+	                            ELSE I.I_NAME
+	                        END
+	                    WHEN N.N_NAME IS NOT NULL THEN N.N_NAME
+	                    ELSE I.I_NAME
+	                END AS NAME,
+	                COALESCE(N.N_VIEW, 0) AS N_VIEW,
+	                COALESCE(I.I_VIEW, 0) AS I_VIEW
+	            FROM NUTRIENT N
+	            FULL OUTER JOIN INGREDIENT I ON N.N_NAME = I.I_NAME
+	            ORDER BY CASE WHEN N_VIEW &gt;= I_VIEW THEN N_VIEW ELSE I_VIEW END DESC
+	        ) subquery
+	        WHERE NAME IS NOT NULL AND ROWNUM &lt;= 10
+	        ORDER BY CASE WHEN N_VIEW &gt;= I_VIEW THEN N_VIEW ELSE I_VIEW END DESC
+	    ) subquery2
+	    ORDER BY CASE WHEN N_VIEW &gt;= I_VIEW THEN N_VIEW ELSE I_VIEW END DESC
+	</select>
+
+	<!-- SEARCH_HISTORY 테이블에 검색어 저장하는 쿼리 -->
+	<insert id="saveSearchHistory" parameterType="String">
+	    INSERT INTO SEARCH_HISTORY (ID, KEYWORD, SEARCH_DATE)
+    	VALUES (SEARCH_HISTORY_SEQ.NEXTVAL, #{keyword}, SYSDATE)
+	</insert>
+
+	<!-- 검색어 Top5 -->
+	<select id="getTop5" resultType="String">
+		SELECT * FROM (
+		  SELECT KEYWORD, COUNT(*) AS search_count
+		  FROM SEARCH_HISTORY
+		  GROUP BY KEYWORD
+		  ORDER BY search_count DESC
+		)
+		WHERE ROWNUM &lt;= 5
+	</select>
+	
+	<!-- 비타민 검색어 Top5 -->
+	<select id="getTop5v" resultType="String">
+		SELECT * FROM (
+		  SELECT KEYWORD, COUNT(*) AS search_count
+		  FROM SEARCH_HISTORY
+		  WHERE LOWER(KEYWORD) LIKE '%비타민%' OR LOWER(KEYWORD) LIKE '%베타카로틴%'
+		  GROUP BY KEYWORD
+		  ORDER BY search_count DESC
+		)
+		WHERE ROWNUM &lt;= 5
+	</select>
+	
+	<!-- 미네랄 검색어 Top5 -->
+	<select id="getTop5m" resultType="String">
+		SELECT * FROM (
+  			SELECT SH.KEYWORD, COUNT(*) AS search_count
+			  FROM SEARCH_HISTORY SH
+			  JOIN NUTRIENT N ON LOWER(SH.KEYWORD) = LOWER(N.N_NAME)
+			  WHERE LOWER(SH.KEYWORD) NOT LIKE '%비타민%' AND LOWER(SH.KEYWORD) NOT LIKE '%베타카로틴%'
+			  GROUP BY SH.KEYWORD
+			  ORDER BY search_count DESC
+			)
+		WHERE ROWNUM &lt;= 5
+	</select>
+	
+	<!-- 기능성원료 검색어 Top5 -->
+	<select id="getTop5i" resultType="String">
+		SELECT * FROM (
+		  SELECT SH.KEYWORD, COUNT(*) AS search_count
+		  FROM SEARCH_HISTORY SH
+		  JOIN INGREDIENT I ON LOWER(SH.KEYWORD) = LOWER(I.I_NAME)
+		  GROUP BY SH.KEYWORD
+		  ORDER BY search_count DESC
+		)
+		WHERE ROWNUM &lt;= 5
+	</select>
+	
+	
+	
+	
+
+	
+	
+	
+	
+</mapper>

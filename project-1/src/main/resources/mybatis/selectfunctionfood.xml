@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.kosmo.springapp.service.SelectFoodMapper">
+	<select id="selectFoodListFromNameScore" parameterType="String" resultType="AvgStarScoreCountDTO">
+	    select * from foodtable F JOIN (
+		    SELECT R_PRODUCTNO, AVG(STARSCORE) AS AVG_SCORE, COUNT(*) AS REVIEW_COUNT
+		    FROM REVIEWTABLE
+		    GROUP BY R_PRODUCTNO
+		)R ON F.NO = R.R_PRODUCTNO
+		<where>
+			<if test="casesel == 1">
+				AND (productname LIKE '%${foodname}%') OR (company LIKE '%${foodname}%') OR (nutrient LIKE '%${foodname}%') 
+			</if>
+			<if test="casesel == 2">
+				AND (nutrient LIKE '%${foodname}%') 
+			</if>
+			<if test="casesel == 3">
+				AND (productname LIKE '%${foodname}%') OR (company LIKE '%${foodname}%')
+			</if>
+		</where>
+		ORDER by R.AVG_SCORE + ((R.AVG_SCORE * R.REVIEW_COUNT)/1000) DESC,imgurl ASC
+	</select>
+	
+	<select id="selectFoodListFromName" parameterType="String" resultType="FunctionalFoodListDTO">
+	    select * from foodtable 
+	    <where>
+	    	<if test="casesel==1">
+	    		AND (productname LIKE '%${foodname}%') OR (company LIKE '%${foodname}%') OR (nutrient LIKE '%${foodname}%')
+	    	</if>
+	    	<if test="casesel==2">
+	    		AND (nutrient LIKE '%${foodname}%')
+	    	</if>
+	    	<if test="casesel==3">
+	    		AND (productname LIKE '%${foodname}%') OR (company LIKE '%${foodname}%') 
+	    	</if>
+	    </where>
+	    ORDER by imgurl
+	</select>
+	
+	<select id="selectFoodListFoodScore" resultType="AvgStarScoreCountDTO">
+		SELECT *
+		FROM FOODTABLE F
+		JOIN (
+		    SELECT R_PRODUCTNO, AVG(STARSCORE) AS AVG_SCORE, COUNT(*) AS REVIEW_COUNT
+		    FROM REVIEWTABLE
+		    GROUP BY R_PRODUCTNO
+		) R ON F.NO = R.R_PRODUCTNO
+		ORDER BY R.AVG_SCORE + ((R.AVG_SCORE * R.REVIEW_COUNT)/1000) DESC
+	</select>
+	<select id="selectFoodListFoodScoreTop10" resultType="AvgStarScoreCountDTO">
+		SELECT *
+		FROM (
+		    SELECT *
+		    FROM FOODTABLE F
+		    JOIN (
+		        SELECT R_PRODUCTNO, AVG(STARSCORE) AS AVG_SCORE, COUNT(*) AS REVIEW_COUNT
+		        FROM REVIEWTABLE
+		        GROUP BY R_PRODUCTNO
+		    ) R ON F.NO = R.R_PRODUCTNO
+		    ORDER BY R.AVG_SCORE + ((R.AVG_SCORE * R.REVIEW_COUNT)/1000) DESC
+		)
+		WHERE ROWNUM &lt;= 10
+	</select>
+	<select id="selectFoodListFromHealthissue" parameterType="String" resultType="AvgStarScoreCountDTO">
+		select * from foodtable F JOIN (
+		    SELECT R_PRODUCTNO, AVG(STARSCORE) AS AVG_SCORE, COUNT(*) AS REVIEW_COUNT
+		    FROM REVIEWTABLE
+		    GROUP BY R_PRODUCTNO
+		)R ON F.NO = R.R_PRODUCTNO
+		where F.material like '%${healthissue}%' ORDER by R.AVG_SCORE + ((R.AVG_SCORE * R.REVIEW_COUNT)/1000) DESC, imgurl ASC
+	</select>
+	<select id="RecommendationFood" parameterType="String" resultType="FunctionalFoodListDTO">
+		select * from foodtable where NO = #{value}
+	</select>
+	<select id="selectFoodListFromNut" parameterType="String" resultType="FunctionalFoodListDTO">
+		select * from (select * from foodtable where NUTRIENT like '%${nut}%' ORDER BY F_VIEW DESC,imgurl) where ROWNUM &lt;= 5
+	</select>
+	<select id="FoodListFromHealthissue" parameterType="String" resultType="AvgStarScoreCountDTO">
+		select * from foodtable where material like '%${healthissue}%' AND ROWNUM &lt;= 500 ORDER by imgurl ASC
+	</select>
+	<select id="healthissuetakefood" parameterType="String" resultType="FunctionalFoodListDTO">
+		select * from (select * from foodtable where material like '%${healthissue}%' ORDER by imgurl ASC) where ROWNUM &lt;= 5
+	</select>
+	<select id="healthIssueCou" parameterType="String" resultType="String">
+		select H_COUPLING from healthissue where H_NAME like '%${healthissue}%'
+	</select>
+	<select id="RankingKeyWord" resultType="String">
+		SELECT KEYWORD FROM KEYWORD WHERE ROWNUM &lt;= 5 ORDER BY WORDCOUNT DESC
+	</select>
+	<update id="selectKeyWord" parameterType="String" >
+		UPDATE KEYWORD SET WORDCOUNT = WORDCOUNT + 1 WHERE KEYWORD = '${foodname}'
+	</update>
+	<select id="checkWord" parameterType="String" resultType="CheckWordDTO">
+		select 1 from KEYWORD where KEYWORD='${food}'
+	</select>
+	<insert id="newWord" parameterType="String">
+		INSERT INTO KEYWORD (KEYWORD,WORDCOUNT) VALUES('${foodname}',0)
+	</insert>
+	
+	<select id="FoodSearch" parameterType="String" resultType="AllFoodDTO">
+		select * from allfoodtable where FOODNAME like '%${foodname}%'
+	</select>
+	
+	<insert id="IntakeFood" parameterType="String">
+		insert into intakefood (id,foodno) values('${ID}','${no}')
+	</insert>
+	<select id="intakeFoodNo" parameterType="String" resultType="String">
+		select foodno from intakefood where ID = '${ID}' AND intakedate like '${formatDate}'
+	</select>
+	<select id="intakeFoodData" parameterType="String" resultType="AllFoodDTO">
+		select * from allfoodtable where no='${no}'
+	</select>
+	<select id="foodNo" parameterType="String" resultType="String">
+		SELECT * FROM foodtable WHERE productname= '${takefood}'
+	</select>
+	<select id="checkUserinfo" parameterType="String" resultType="String">
+		select 1 from userKCAL where id = '${ID}'
+	</select>
+	<insert id="newUserinfo" parameterType="String">
+		INSERT INTO USERKCAL (ID, KCAL, FATRATE, PRORATE, CBHRATE, ACTSTAGE)
+		VALUES ('${ID}', '${dailyCalories}', '${Fatrate}', '${Prorate}', '${Cbhrate}', '${healthIssueSelect}')
+	</insert>
+	<update id="updateUserinfo" parameterType="String">
+		UPDATE USERKCAL
+		SET KCAL = '${dailyCalories}',
+		    FATRATE = '${Fatrate}',
+		    PRORATE = '${Prorate}',
+		    CBHRATE = '${Cbhrate}',
+		    ACTSTAGE = '${healthIssueSelect}'
+		WHERE ID = '${ID}'
+	</update>
+	<select id="userinfo" parameterType="String" resultType="UserInfoDTO">
+		select * from userkcal where id = '${ID}'
+	</select>
+	<update id="updateUserscore" parameterType="String">
+		update userfoodscore
+		set SCORE = '${Score}'
+		where ID = '${ID}' AND scoredate like '${formatDate}'
+	</update>
+	<insert id="newUserscore" parameterType="String">
+		Insert into userfoodscore (id,score) values ('${ID}','${Score}')
+	</insert>
+	<select id="checkUserscore" parameterType="String" resultType="String">
+		select 1 from userfoodscore where ID = '${ID}' AND scoredate like '${formatDate}'
+	</select>
+	<select id="foodscore" parameterType="String" resultType="AllFoodScoreDTO">
+		select * from userfoodscore where ID = '${ID}' AND scoredate like '${formatDate}'
+	</select>
+	<delete id="deletefood" parameterType="String">
+		delete (select * from intakefood where foodno='${no}' and id='${ID}' and intakedate like '%${formatDate}%') where rownum = 1
+	</delete>
+</mapper>

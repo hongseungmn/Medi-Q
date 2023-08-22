@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 매퍼 파일 -->
+<mapper namespace="com.kosmo.springapp.service.MainPageMapper">
+ 	<select id="selectFoodList" resultType="functionalFoodListDto">
+ 		SELECT * FROM foodtable ORDER BY NO
+ 	</select>
+  	<select id="selectFoodOneByNo" parameterType="Map" resultType="functionalFoodListDto">
+ 		SELECT * FROM foodtable WHERE no=#{no}
+	</select>
+	<select id="selectFoodNameList" resultType="Map" parameterType="String">
+	SELECT *
+FROM (
+  SELECT PRODUCTNAME, IMGURL
+  FROM foodtable
+  WHERE PRODUCTNAME LIKE #{searchWord} || '%'
+    AND IMGURL IS NOT NULL
+  UNION ALL
+  SELECT PRODUCTNAME, IMGURL
+  FROM foodtable
+  WHERE PRODUCTNAME LIKE #{searchWord} || '%'
+    AND IMGURL IS NULL
+)
+WHERE ROWNUM &lt;= 8
+ORDER BY IMGURL ASC
+	</select>
+</mapper>

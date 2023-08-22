@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 매퍼 파일 -->
+<mapper namespace="com.kosmo.springapp.service.HealthMemoMapper">
+	<insert id="save" parameterType="Map">
+		INSERT INTO HEALTH_MEMO VALUES(
+		#{mm_Date},#{mm_Id},#{mm_Condition},
+		#{mm_Head},#{mm_Resp},#{mm_Stomach},#{mm_Mental},#{mm_Chest},#{mm_Body},
+		#{mm_Height},#{mm_Weight},#{mm_Content})
+	</insert>
+	
+	<update id="update" parameterType="Map">
+		UPDATE HEALTH_MEMO SET
+		MM_CONDITION=#{mm_Condition},
+		MM_HEAD=#{mm_Head},MM_RESP=#{mm_Resp},MM_STOMACH=#{mm_Stomach},MM_MENTAL=#{mm_Mental},MM_CHEST=#{mm_Chest},MM_BODY=#{mm_Body},
+		MM_HEIGHT=#{mm_Height},MM_WEIGHT=#{mm_Weight},MM_CONTENT=#{mm_Content}
+		WHERE MM_ID=#{mm_Id} AND MM_DATE=#{mm_Date}
+	</update>
+	
+	<delete id="delete" parameterType="Map">
+		DELETE FROM HEALTH_MEMO WHERE MM_ID=#{mm_Id} AND MM_DATE=#{mm_Date}
+	</delete>
+	
+	<select id="findMemo" parameterType="Map" resultType="MemoDto">
+		SELECT * FROM HEALTH_MEMO WHERE MM_ID=#{mm_Id} AND MM_DATE=#{mm_Date}
+	</select>
+	
+	<select id="findAllMemo" parameterType="Map" resultType="MemoDto">
+		SELECT * FROM HEALTH_MEMO WHERE MM_ID=#{mm_Id}
+	</select>
+</mapper>

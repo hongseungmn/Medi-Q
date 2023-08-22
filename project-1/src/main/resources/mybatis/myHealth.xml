@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 매퍼 파일 -->
+<mapper namespace="com.kosmo.springapp.service.MyHealthMapper">
+
+	<select id="select" parameterType="String" resultType="MyHealthDTO">
+		select * from MY_HEALTH where id=#{id}
+	</select>
+
+	<select id="selectFood" parameterType="String" resultType="Map">
+		SELECT ft.PRODUCTNAME,ft.IMGURL,ft.NO,ft.COMPANY,tfa.ALARM_FL
+		FROM FOODTABLE ft
+		LEFT JOIN take_food_alarm tfa ON ft.PRODUCTNAME = tfa.FOODNAME AND tfa.ID=#{id}
+		WHERE ft.PRODUCTNAME IN (
+		SELECT REGEXP_SUBSTR(foodname, '[^,]+', 1, b.lv) AS foodname
+		FROM my_health a, (SELECT LEVEL AS lv FROM dual CONNECT BY LEVEL &#60;= 10) b
+		WHERE REGEXP_SUBSTR(foodname, '[^,]+', 1, b.lv) IS NOT NULL and id=#{id})
+	</select>
+	
+	<insert id="insert" parameterType="Map">
+		insert into MY_HEALTH values (#{id},#{worry},#{disease},#{allergy},#{foodname},#{special})
+	</insert>
+	
+	<delete id="delete" parameterType="String">
+		delete from MY_HEALTH where id=#{id}
+	</delete>
+	
+	<select id="selectMyHealth" parameterType="String" resultType="int">
+		SELECT COUNT(*) FROM MY_HEALTH WHERE ID=#{id}
+	</select>
+	
+</mapper>

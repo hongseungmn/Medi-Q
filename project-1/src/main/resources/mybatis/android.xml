@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 매퍼 파일 -->
+<mapper namespace="com.kosmo.springapp.service.AndroidMapper">
+ 	<select id="selectFoodList" resultType="functionalFoodListDto">
+ 		SELECT *
+		FROM (SELECT * FROM foodtable ORDER BY NO)
+		WHERE ROWNUM &lt;=10
+ 	</select>
+ 	<select id="selectFoodListByNutrient" parameterType="String" resultType="functionalFoodListDto">
+ 		SELECT *
+ 		FROM (SELECT * FROM FOODTABLE WHERE NUTRIENT LIKE '%' || #{nutrient} || '%' ORDER BY F_VIEW DESC)
+		WHERE ROWNUM &lt;=10
+ 	</select>
+ 	<select id="selectFoodListByPurpose" parameterType="String" resultType="functionalFoodListDto">
+ 		SELECT *
+ 		FROM (SELECT * FROM FOODTABLE WHERE MATERIAL LIKE '%' || #{purpose} || '%' ORDER BY F_VIEW DESC)
+		WHERE ROWNUM &lt;=10
+ 	</select>
+ 	<select id="selectFood" parameterType="String" resultType="functionalFoodListDto">
+ 		SELECT * FROM foodtable WHERE no=#{no}
+ 	</select>
+ 	<select id="selectFoodListByKeyWord" parameterType="String" resultType="functionalFoodListDto">
+ 		SELECT *
+ 		FROM (SELECT * FROM FOODTABLE WHERE PRODUCTNAME LIKE '%' || #{keyword} || '%' ORDER BY F_VIEW DESC)
+		WHERE ROWNUM &lt;=10
+ 	</select>
+ 	<select id="getFoodNameByNo" parameterType="String" resultType="String">
+ 		SELECT PRODUCTNAME FROM FOODTABLE WHERE no= #{no}
+ 	</select>
+ 	<select id="selectFoodByName" parameterType="String" resultType="functionalFoodListDto">
+ 		SELECT * FROM (
+		    SELECT * FROM FOODTABLE WHERE PRODUCTNAME LIKE '%' || #{foodName} || '%'
+		) WHERE ROWNUM = 1
+ 	</select>
+</mapper>

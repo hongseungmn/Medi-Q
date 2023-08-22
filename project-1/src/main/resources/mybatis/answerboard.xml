@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kosmo.springapp.qnabbs.service.impl.board.AnswerMapper">
+	<!-- 입력 -->
+	<insert id="answerinsert" parameterType="map">
+	  <!-- sequence번호생성 -->
+	  <selectKey resultType="int" order="BEFORE" keyProperty="answer_no">
+	    SELECT SEQ_ANSWER_BOARD.NEXTVAL FROM DUAL
+	  </selectKey>
+	  INSERT INTO ANSWER_BOARD VALUES (#{answer_no}, #{no}, #{content},DEFAULT, #{id})
+	</insert>
+	<!-- 답변글 상세보기 -->
+	<select id="answerselectOne" parameterType="map" resultType="map">
+		SELECT ab.answer_no,ab.board_no,ab.content,ab.id,TO_CHAR(ab.postdate, 'YYYY.MM.DD') AS postdate, m.name
+	    FROM answer_board ab
+	    JOIN member m ON ab.id = m.id
+	    <where>
+	        <if test="NO != null"><!-- 게시물 NO -->
+	            AND board_no = #{NO}
+	        </if>
+	        <if test="answer_no != null"><!-- 답변글 존재시 --> 
+	            OR answer_no = #{answer_no}
+	        </if>
+	    </where>
+	    AND ROWNUM = 1<!-- 만약 답변글이 여러 개일 경우 하나만(첫번째answer_no) -->
+	</select>
+	<!-- 답변글 수정 -->
+	<update id="answerupdate" parameterType="map">
+		UPDATE answer_board SET content=#{content} WHERE answer_no=#{answer_no}
+	</update>
+	<!-- (답변글 NO로)답변글 삭제 (삭제시 게시물이 남아있어서 다시쓰면 추천수count는 1로 올라가 있음 추천수 0으로 초기화 시켜야됨) -->
+	<delete id="answerdelete" parameterType="map">
+		DELETE answer_board WHERE answer_no=#{answer_no}
+	</delete>
+	<!-- (게시물 NO로)답변글 삭제 -->
+	<delete id="boarddelete" parameterType="map">
+		DELETE answer_board WHERE board_no=#{no}
+	</delete>
+</mapper>

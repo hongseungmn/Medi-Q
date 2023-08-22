@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- admin.xml -->
+
+<mapper namespace="com.kosmo.springapp.admin.service.AdminMapper">
+
+	<!-- 전체 회원 정보 -->
+	<select id="getMemberInfo" resultType="memberDto">
+		SELECT * FROM MEMBER ORDER BY ACTIVE
+	</select>
+
+	<!-- 회원 정보 삭제 -->
+	<delete id="deleteMemberInfoByAdmin" parameterType="String">
+	    DELETE FROM MEMBER WHERE ID = #{memberId}
+	</delete>
+
+	<!-- 수정 전 ID로 회원 정보 가져오기 -->
+	<select id="getMemberInfoById" parameterType="String" resultType="MemberDTO">
+		SELECT * FROM MEMBER WHERE ID = #{memberId}
+	</select>
+	
+	<!-- 회원 정보 수정 -->
+	<update id="updateMemberInfoByAdmin" parameterType="MemberDTO">
+	    UPDATE MEMBER
+	    SET
+	        NAME = #{name},
+	        BIRTH = #{birth},
+	        GENDER = #{gender},
+	        EMAIL = #{email},
+	        ACTIVE = #{active},
+	        INACTIVE_DATE = #{inactive_date, jdbcType=NULL},
+        	SOCIAL_FL = #{social_Fl},
+    	    SITE = #{site, jdbcType=NULL} <!-- null값도 넣으려면 추가해야함 -->
+	    WHERE
+	        ID = #{id}
+	</update>
+	
+	<!-- 최근 일주일 로그인수 가져오기 -->
+	<select id="count_6days_ago" resultType="int">
+	    SELECT COUNT(*)
+	    FROM LOGIN_LOG
+	    WHERE LL_DATE BETWEEN TRUNC(SYSDATE) - 6 AND TRUNC(SYSDATE) - 5
+	</select>
+	<select id="count_5days_ago" resultType="int">
+	    SELECT COUNT(*)
+	    FROM LOGIN_LOG
+	    WHERE LL_DATE BETWEEN TRUNC(SYSDATE) - 5 AND TRUNC(SYSDATE) - 4
+	</select>
+	<select id="count_4days_ago" resultType="int">
+	    SELECT COUNT(*)
+	    FROM LOGIN_LOG
+	    WHERE LL_DATE BETWEEN TRUNC(SYSDATE) - 4 AND TRUNC(SYSDATE) - 3
+	</select>
+	<select id="count_3days_ago" resultType="int">
+	    SELECT COUNT(*)
+	    FROM LOGIN_LOG
+	    WHERE LL_DATE BETWEEN TRUNC(SYSDATE) - 3 AND TRUNC(SYSDATE) - 2
+	</select>
+	<select id="count_2days_ago" resultType="int">
+	    SELECT COUNT(*)
+	    FROM LOGIN_LOG
+	    WHERE LL_DATE BETWEEN TRUNC(SYSDATE) - 2 AND TRUNC(SYSDATE) - 1
+	</select>
+	<select id="count_1days_ago" resultType="int">
+	    SELECT COUNT(*)
+	    FROM LOGIN_LOG
+	    WHERE LL_DATE BETWEEN TRUNC(SYSDATE) - 1 AND TRUNC(SYSDATE)
+	</select>
+	<select id="count_0days_ago" resultType="int">
+	    SELECT COUNT(*)
+	    FROM LOGIN_LOG
+	    WHERE LL_DATE BETWEEN TRUNC(SYSDATE) AND TRUNC(SYSDATE) + INTERVAL '1' DAY
+	</select>
+	
+	<!-- 로그인시 로그인 저장하기 -->
+	<insert id="insertLoginMember" parameterType="String">
+		INSERT INTO LOGIN_LOG (LL_ID, LL_DATE) VALUES (#{id}, SYSDATE)
+	</insert>
+	
+	<!-- 최근 일주일 회원가입수 가져오기 -->
+	<select id="scount_6days_ago" resultType="int">
+	    SELECT COUNT(*)
+		FROM MEMBER
+		WHERE TRUNC(REGDATE) = TRUNC(SYSDATE) - 6
+	</select>
+	<select id="scount_5days_ago" resultType="int">
+	    SELECT COUNT(*)
+		FROM MEMBER
+		WHERE TRUNC(REGDATE) = TRUNC(SYSDATE) - 5
+	</select>
+	<select id="scount_4days_ago" resultType="int">
+	    SELECT COUNT(*)
+		FROM MEMBER
+		WHERE TRUNC(REGDATE) = TRUNC(SYSDATE) - 4
+	</select>
+	<select id="scount_3days_ago" resultType="int">
+	    SELECT COUNT(*)
+		FROM MEMBER
+		WHERE TRUNC(REGDATE) = TRUNC(SYSDATE) - 3
+	</select>
+	<select id="scount_2days_ago" resultType="int">
+	    SELECT COUNT(*)
+		FROM MEMBER
+		WHERE TRUNC(REGDATE) = TRUNC(SYSDATE) - 2
+	</select>
+	<select id="scount_1days_ago" resultType="int">
+	    SELECT COUNT(*)
+		FROM MEMBER
+		WHERE TRUNC(REGDATE) = TRUNC(SYSDATE) - 1
+	</select>
+	<select id="scount_0days_ago" resultType="int">
+	    SELECT COUNT(*)
+		FROM MEMBER
+		WHERE TRUNC(REGDATE) = TRUNC(SYSDATE)
+	</select>
+	
+	<!-- FOODTABLE에서 정보 가져오기 -->
+	<select id="getInfoFromFoodTable" resultType="Map">
+		SELECT * FROM (
+		    SELECT 
+		        f.NO,
+		        f.PRODUCTNAME,
+		        f.MATERIAL,
+		        f.NUTRIENT,
+		        (SELECT COUNT(*) FROM REVIEWTABLE r WHERE f.NO = r.R_PRODUCTNO) AS REVIEW_COUNT,
+		        ROUND((SELECT AVG(STARSCORE) FROM REVIEWTABLE r WHERE f.NO = r.R_PRODUCTNO), 2) AS AVG_STARSCORE
+		    FROM
+		        FOODTABLE f
+		    ORDER BY
+		        REVIEW_COUNT DESC
+		) WHERE ROWNUM &lt;= 30
+	</select>
+	
+	<!-- 영양소 정보 가져오기 -->
+	<select id="getInfoFromNut" resultType="Map">
+		SELECT
+		    N_NAME,
+		    N_FUNC,
+		    N_VIEW,
+		    RTRIM(
+		        XMLAGG(XMLELEMENT(E, '"' || PRODUCTNAME || '", ').EXTRACT('//text()') ORDER BY PRODUCTNAME).GetClobVal(),
+		        ', '
+		    ) AS PRODUCTNAMES
+		FROM (
+		    SELECT
+		        N_NAME,
+		        N_FUNC,
+		        N_VIEW,
+		        PRODUCTNAME,
+		        ROW_NUMBER() OVER (PARTITION BY N_NAME, N_FUNC, N_VIEW ORDER BY PRODUCTNAME) AS RN
+		    FROM
+		        NUTRIENT,
+		        FOODTABLE
+		    WHERE
+		        FOODTABLE.NUTRIENT LIKE '%' || NUTRIENT.N_FINDINGNAME || '%'
+		        OR FOODTABLE.STANDARD LIKE '%' || NUTRIENT.N_FINDINGNAME || '%'
+		) Subquery
+		WHERE Subquery.RN &lt;= 3
+		GROUP BY
+		    N_NAME,
+		    N_FUNC,
+		    N_VIEW
+	</select>
+	
+	<select id="getInfoFromIng" resultType="Map">
+		SELECT
+		    I_NAME,
+		    I_FUNC,
+		    I_VIEW,
+		    RTRIM(
+		        XMLAGG(XMLELEMENT(E, '"' || PRODUCTNAME || '", ').EXTRACT('//text()') ORDER BY PRODUCTNAME).GetClobVal(),
+		        ', '
+		    ) AS PRODUCTNAMES
+		FROM (
+		    SELECT
+		        I_NAME,
+		        I_FUNC,
+		        I_VIEW,
+		        PRODUCTNAME,
+		        ROW_NUMBER() OVER (PARTITION BY I_NAME, I_FUNC, I_VIEW ORDER BY PRODUCTNAME) AS RN
+		    FROM
+		        INGREDIENT,
+		        FOODTABLE
+		    WHERE
+		        FOODTABLE.NUTRIENT LIKE '%' || INGREDIENT.I_FINDINGNAME || '%'
+		        OR FOODTABLE.STANDARD LIKE '%' || INGREDIENT.I_FINDINGNAME || '%'
+		) Subquery
+		WHERE Subquery.RN &lt;= 3
+		GROUP BY
+		    I_NAME,
+		    I_FUNC,
+		    I_VIEW
+	</select>
+	
+	
+	<!-- 영양소 검색수 -->
+	<select id="getNutTop10s" resultType="int" parameterType="String">
+	    SELECT COUNT(*) AS sCount
+	    FROM SEARCH_HISTORY
+	    WHERE KEYWORD LIKE '%' || #{name} || '%'
+	    	AND SEARCH_DATE >= SYSDATE - 6
+	</select>	
+	
+	<select id="getInfoFromAnalyzeTable" resultType="Map">
+		SELECT 
+		    A.USERID,
+		    A.TAKEPURPOSES,
+		    A.SCORE,
+		    A.ANALYZEDATE,
+		    M.BIRTH
+		FROM
+		    ANALYZETABLE A
+		INNER JOIN
+		    MEMBER M
+		ON
+		    A.USERID = M.ID
+	    ORDER BY A.ANALYZEDATE DESC
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+
+</mapper>

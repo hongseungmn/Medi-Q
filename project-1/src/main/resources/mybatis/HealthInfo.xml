@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 매퍼 파일 -->
+<mapper namespace="com.kosmo.springapp.service.HealthInfoMapper">
+	<insert id="saveHealthInfo" parameterType="healthInfoDto">
+		INSERT INTO HEALTHINFO VALUES (
+		#{userId},
+		#{height},
+		#{weight},
+		#{waistline},
+		#{bmi},
+		#{vision},
+		#{listen},
+		#{bloodPressure_high},
+		#{bloodPressure_low},
+		#{proteinuria},
+		#{hemoglobin},
+		#{bloodSugar},
+		#{total_cholesterol},
+		#{HDL_cholesterol},
+		#{triglyceride},
+		#{LDL_cholesterol},
+		#{serum_creatinine},
+		#{ast},
+		#{alt},
+		#{gpt}
+		) 
+	</insert>
+	<update id="updateHealthInfo" parameterType="healthInfoDto">
+	UPDATE HEALTHINFO
+	SET 	
+	height = #{height},
+	weight = #{weight},
+	waistline = #{waistline},
+	bmi = #{bmi},
+	vision = #{vision},
+	listen = #{listen},
+	bloodPressure_high = #{bloodPressure_high},
+	bloodPressure_low = #{bloodPressure_low},
+	proteinuria= #{proteinuria},
+	hemoglobin = #{hemoglobin},
+	bloodSugar = #{bloodSugar},
+	total_cholesterol = #{total_cholesterol},
+	HDL_cholesterol = #{HDL_cholesterol},
+	triglyceride = #{triglyceride},
+	LDL_cholesterol = #{LDL_cholesterol},
+	serum_creatinine = #{serum_creatinine},
+	ast = #{ast},
+	alt	= #{alt},
+	gpt	= #{gpt}
+	WHERE userId = #{userId}
+	</update>
+	
+	
+	<select id="selectHealthInfoByUserId" parameterType="String" resultType="healthInfoDto">
+		SELECT *
+		FROM (SELECT * FROM HEALTHINFO WHERE userId = #{userId})
+		WHERE ROWNUM = 1
+	</select>
+	
+	<select id="selectHealthInfoCount" parameterType="String" resultType="int">
+		SELECT COUNT(*) FROM HEALTHINFO WHERE USERID = #{id}
+	</select>
+</mapper>

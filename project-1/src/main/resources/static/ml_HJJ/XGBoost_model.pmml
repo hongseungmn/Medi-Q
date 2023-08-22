@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PMML xmlns="http://www.dmg.org/PMML-4_4" xmlns:data="http://jpmml.org/jpmml-model/InlineTable" version="4.4">
+	<Header>
+		<Application name="SkLearn2PMML package" version="0.97.0"/>
+		<Timestamp>2023-08-05T05:21:48Z</Timestamp>
+	</Header>
+	<MiningBuildTask>
+		<Extension name="repr">PMMLPipeline(steps=[('estimator', DataFrameMapper(drop_cols=[],
+                features=[('age', None), ('hypertension', None),
+                          ('heart_disease', None), ('ever_married', None),
+                          ('avg_glucose_level', None), ('bmi', None),
+                          ('gender_Female', None), ('gender_Male', None),
+                          ('work_type_Govt_job', None),
+                          ('work_type_Never_worked', None),
+                          ('work_type_Private', None),
+                          ('work_type_Self-employed', None),
+                          ('work_type_children', None)...
+                          ('smoking_status_Unknown', None),
+                          ('smoking_status_formerly smoked', None),
+                          ('smoking_status_never smoked', None),
+                          ('smoking_status_smokes', None),
+                          ('health_risk_score', None),
+                          ('bmi_category_Normal weight', None),
+                          ('bmi_category_Obese', None),
+                          ('bmi_category_Overweight', None),
+                          ('bmi_category_Underweight', None),
+                          ('age_category_Adult', None),
+                          ('age_category_Child', None),
+                          ('age_category_Senior', None)]))])</Extension>
+	</MiningBuildTask>
+	<DataDictionary>
+		<DataField name="age" optype="continuous" dataType="double"/>
+		<DataField name="hypertension" optype="continuous" dataType="double"/>
+		<DataField name="heart_disease" optype="continuous" dataType="double"/>
+		<DataField name="ever_married" optype="continuous" dataType="double"/>
+		<DataField name="avg_glucose_level" optype="continuous" dataType="double"/>
+		<DataField name="bmi" optype="continuous" dataType="double"/>
+		<DataField name="gender_Female" optype="continuous" dataType="double"/>
+		<DataField name="gender_Male" optype="continuous" dataType="double"/>
+		<DataField name="work_type_Govt_job" optype="continuous" dataType="double"/>
+		<DataField name="work_type_Never_worked" optype="continuous" dataType="double"/>
+		<DataField name="work_type_Private" optype="continuous" dataType="double"/>
+		<DataField name="work_type_Self-employed" optype="continuous" dataType="double"/>
+		<DataField name="work_type_children" optype="continuous" dataType="double"/>
+		<DataField name="Residence_type_Rural" optype="continuous" dataType="double"/>
+		<DataField name="Residence_type_Urban" optype="continuous" dataType="double"/>
+		<DataField name="smoking_status_Unknown" optype="continuous" dataType="double"/>
+		<DataField name="smoking_status_formerly smoked" optype="continuous" dataType="double"/>
+		<DataField name="smoking_status_never smoked" optype="continuous" dataType="double"/>
+		<DataField name="smoking_status_smokes" optype="continuous" dataType="double"/>
+		<DataField name="health_risk_score" optype="continuous" dataType="double"/>
+		<DataField name="bmi_category_Normal weight" optype="continuous" dataType="double"/>
+		<DataField name="bmi_category_Obese" optype="continuous" dataType="double"/>
+		<DataField name="bmi_category_Overweight" optype="continuous" dataType="double"/>
+		<DataField name="bmi_category_Underweight" optype="continuous" dataType="double"/>
+		<DataField name="age_category_Adult" optype="continuous" dataType="double"/>
+		<DataField name="age_category_Child" optype="continuous" dataType="double"/>
+		<DataField name="age_category_Senior" optype="continuous" dataType="double"/>
+	</DataDictionary>
+</PMML>

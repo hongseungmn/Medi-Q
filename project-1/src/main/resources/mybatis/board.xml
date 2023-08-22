@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kosmo.springapp.qnabbs.service.impl.board.BoardMapper">
+	<!-- 입력 -->
+	<insert id="insert" parameterType="map">
+		<!-- sequence번호생성 -->
+		<selectKey resultType="int" order="BEFORE" keyProperty="no">
+			SELECT SEQ_BOARD.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO board VALUES(#{no},#{id},#{title},#{content},DEFAULT)
+	</insert>
+	<!-- 상세보기 -->
+	<select id="selectOne" parameterType="map" resultType="map">
+		SELECT b.no,b.id,b.title,b.content,TO_CHAR(b.postdate, 'YYYY.MM.DD') AS postdate,m.active,
+		   CASE 
+		   	   WHEN LENGTH(m.name) >= 2 THEN SUBSTR(m.name, 1, 1) || '*' || SUBSTR(m.name, 3)
+		       ELSE m.name
+		   END AS name,
+		   CASE
+	           WHEN (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) >= 0 AND (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) &lt; 20 THEN '10대'
+	           WHEN (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) >= 20 AND (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) &lt; 30 THEN '20대'
+	           WHEN (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) >= 30 AND (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) &lt; 40 THEN '30대'
+	           WHEN (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) >= 40 AND (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) &lt; 50 THEN '40대'
+	           WHEN (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) >= 50 AND (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) &lt; 60 THEN '50대'
+	           WHEN (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) >= 60 AND (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) &lt; 70 THEN '60대'
+	           WHEN (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) >= 70 AND (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) &lt; 80 THEN '70대'
+	           WHEN (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) >= 80 AND (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) &lt; 90 THEN '80대'
+	           WHEN (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) >= 90 AND (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) &lt; 100 THEN '90대'
+	           ELSE '기타'
+	       END AS age_group,
+	       CASE
+	           WHEN m.gender = 'M' THEN '남자'
+	           WHEN m.gender = 'F' THEN '여자'
+	           ELSE '관리자'
+	       END AS gender
+	    FROM board b
+	    JOIN member m ON b.id = m.id
+	    WHERE no = #{no}
+	</select>
+	<!-- 전체목록보기 -->
+	<select id="selectList" parameterType="map" resultType="map" >
+	    SELECT * FROM(
+		    SELECT T.*, ROWNUM R FROM(
+			    SELECT b.no, b.title, b.content,TO_CHAR(b.postdate, 'YYYY.MM.DD') AS postdate, 
+				    CASE 
+				        WHEN LENGTH(m.name) >= 2 THEN SUBSTR(m.name, 1, 1) || '*' || SUBSTR(m.name, 3)
+				        ELSE m.name
+				    END AS name,
+				    CASE
+				        WHEN (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) >= 0 AND (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) &lt; 20 THEN '10대'
+				        WHEN (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) >= 20 AND (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) &lt; 30 THEN '20대'
+				        WHEN (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) >= 30 AND (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) &lt; 40 THEN '30대'
+				        WHEN (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) >= 40 AND (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) &lt; 50 THEN '40대'
+				        WHEN (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) >= 50 AND (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) &lt; 60 THEN '50대'
+				        WHEN (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) >= 60 AND (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) &lt; 70 THEN '60대'
+				        WHEN (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) >= 70 AND (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) &lt; 80 THEN '70대'
+				        WHEN (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) >= 80 AND (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) &lt; 90 THEN '80대'
+				        WHEN (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) >= 90 AND (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) &lt; 100 THEN '90대'
+				        ELSE '기타'
+				    END AS age_group,
+				    CASE
+				        WHEN m.gender = 'M' THEN '남자'
+				        WHEN m.gender = 'F' THEN '여자'
+				        ELSE '관리자'
+				    END AS gender
+				FROM board b
+				JOIN member m ON b.id = m.id
+				ORDER BY no DESC
+			) T)
+		WHERE R BETWEEN #{start} AND #{end}
+	</select>
+	<!-- 전체 레코드 수 조회 -->
+	<select id="count" parameterType="Map" resultType="int">
+		SELECT COUNT(*)
+		FROM board b JOIN member m ON m.id=b.id
+	</select>
+	<!-- 추천수 TOP5 목록보기 -->
+	<select id="likeList" parameterType="map" resultType="map">
+		SELECT * FROM (
+		    SELECT b.no, b.title, b.content, TO_CHAR(b.postdate, 'YYYY.MM.DD') AS postdate,
+		           CASE
+		               WHEN LENGTH(m.name) >= 2 THEN SUBSTR(m.name, 1, 1) || '*' || SUBSTR(m.name, 3)
+		               ELSE m.name
+		           END AS name,
+		           CASE
+		               WHEN (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) >= 0 AND (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) &lt; 20 THEN '10대'
+		               WHEN (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) >= 20 AND (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) &lt; 30 THEN '20대'
+		               WHEN (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) >= 30 AND (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) &lt; 40 THEN '30대'
+		               WHEN (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) >= 40 AND (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) &lt; 50 THEN '40대'
+		               WHEN (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) >= 50 AND (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) &lt; 60 THEN '50대'
+		               WHEN (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) >= 60 AND (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) &lt; 70 THEN '60대'
+		               WHEN (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) >= 70 AND (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) &lt; 80 THEN '70대'
+		               WHEN (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) >= 80 AND (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) &lt; 90 THEN '80대'
+		               WHEN (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) >= 90 AND (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM m.birth)) &lt; 100 THEN '90대'
+		               ELSE '기타'
+		           END AS age_group,
+		           CASE
+		               WHEN m.gender = 'M' THEN '남자'
+		               WHEN m.gender = 'F' THEN '여자'
+		               ELSE '관리자'
+		           END AS gender,
+		           COALESCE(l.like_count, 0) AS like_count
+		    FROM board b
+		    JOIN member m ON b.id = m.id
+		    JOIN answer_board ab ON b.no = ab.board_no
+		    LEFT JOIN (
+		        SELECT no, COUNT(no) AS like_count
+		        FROM likeboard 
+		        GROUP BY no
+		    ) l ON l.no = ab.answer_no
+		ORDER BY like_count DESC, b.no DESC
+		)
+		WHERE ROWNUM &lt;= 3
+	</select>
+	<!-- 수정 -->
+	<update id="update" parameterType="map">
+		UPDATE board SET title=#{title},content=#{content} WHERE no=#{no}
+	</update>
+	<!-- 질문 글번호로 삭제 -->
+	<delete id="delete" parameterType="map">
+		DELETE board WHERE no=#{no}
+	</delete>
+</mapper>

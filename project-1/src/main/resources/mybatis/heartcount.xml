@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 매퍼 파일 -->
+<mapper namespace="com.kosmo.springapp.service.HeartCountMapper">
+
+	<select id="HeartCount" parameterType="String" resultType="String">
+		select count(*) from LIKEFOOD where id=#{id} AND foodname=#{name}
+	</select>
+	<insert id="insertHeart" parameterType="String">
+		insert into LIKEFOOD (ID,foodname) values(#{id},#{name})
+	</insert>
+	<delete id="deleteHeart" parameterType="String">
+		delete from LIKEFOOD where id=#{id} AND foodname=#{name}
+	</delete>
+	<select id="selectFood" parameterType="String" resultType="Map">
+		SELECT FOODTABLE.NO NO,FOODNAME,COMPANY,FOODTABLE.IMGURL IMGURL
+		FROM LIKEFOOD RIGHT OUTER JOIN FOODTABLE
+		ON LIKEFOOD.FOODNAME=FOODTABLE.PRODUCTNAME
+		WHERE ID=#{id}
+	</select>
+</mapper>

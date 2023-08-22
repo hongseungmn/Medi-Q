@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 매퍼 파일 -->
+<mapper namespace="com.kosmo.springapp.qnabbs.service.impl.board.LikeBoardMapper">
+	<!-- 좋아요 추가 -->
+	<insert id="insertLike" parameterType="Map">
+	    INSERT INTO LIKEBOARD ("ID", "NO")
+	    VALUES (#{id}, #{no})
+	</insert>
+	
+	<!-- 좋아요 토글용 삭제 -->
+	<delete id="deleteLike" parameterType="Map">
+	    DELETE FROM LIKEBOARD
+	    WHERE "ID" = #{id} AND "NO" = #{no}
+	</delete>
+	<!-- 좋아요 여부 조회 -->
+	<select id="getLike" parameterType="Map" resultType="Integer">
+	    SELECT COUNT(*) FROM LIKEBOARD
+	    WHERE "ID" = #{id} AND "NO" = #{no}
+	</select>
+	
+	<!-- 게시물의 총 좋아요 개수 조회 -->
+	<select id="getTotalLikes" parameterType="int" resultType="Integer">
+	    SELECT COUNT(*) FROM LIKEBOARD
+	    WHERE "NO" = #{no}
+	</select>
+</mapper>

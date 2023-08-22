@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 매퍼 파일 -->
+<mapper namespace="com.kosmo.springapp.service.LoginMapper">
+	<select id="findByIdAndPwd" parameterType="Map" resultType="boolean">
+		SELECT COUNT(*) FROM MEMBER WHERE ID=#{id} AND PASSWORD=#{password}
+	</select>
+	
+	<select id="checkById" parameterType="Map" resultType="boolean">
+		SELECT COUNT(*) FROM MEMBER WHERE ID=#{id}
+	</select>
+	
+	<insert id="save" parameterType="memberDto">
+		INSERT INTO MEMBER VALUES(#{id},#{name},#{password},#{birth},#{gender},#{email},SYSDATE,'Y','N',DEFAULT)
+	</insert>
+	
+	<select id="searchIdNPwd" parameterType="Map" resultType="memberDto">
+		<if test="mode eq 'ID'">
+			SELECT * FROM MEMBER WHERE EMAIL=#{email} AND NAME=#{name}
+		</if>
+		<if test="mode eq 'PWD'">
+			SELECT * FROM MEMBER WHERE EMAIL=#{email} AND ID=#{id} 
+		</if>
+	</select>
+	
+	<insert id="saveSocial" parameterType="Map">
+		<if test="site eq 'kakao'">
+			INSERT INTO SOCIAL VALUES(#{email},#{gender},#{site},SYSDATE,'N')
+		</if>
+		<if test="site eq 'naver'">
+			INSERT INTO SOCIAL VALUES(#{email},#{gender},#{site},SYSDATE,'N',#{name},#{birth})
+		</if>
+	</insert>
+	
+	<select id="checkBySocial" parameterType="Map" resultType="int">
+		SELECT COUNT(*) FROM SOCIAL WHERE EMAIL=#{email}
+	</select>
+	
+	
+</mapper>

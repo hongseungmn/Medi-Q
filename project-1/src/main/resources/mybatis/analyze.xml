@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 매퍼 파일 -->
+<mapper namespace="com.kosmo.springapp.analyze.service.AnalyzeMapper">
+ 	<select id="findNutrientByName" parameterType="String" resultType="NutrientDTO" >
+            SELECT * FROM nutrient WHERE N_SUBNAME = '${str}'
+ 	</select>
+ 	<select id="findHealthIssueByNo" parameterType="int" resultType="HealthIssueDTO">
+ 		SELECT * FROM HEALTHISSUE WHERE h_no=#{hno}
+	</select>
+	<select id="nutrientList" resultType="String">
+		SELECT n_subname FROM nutrient
+	</select>
+	<select id="selectFoodOneByName" parameterType="String" resultType="FunctionalFoodListDTO">
+		SELECT * FROM foodtable where PRODUCTNAME = '${str}'
+	</select>
+</mapper>

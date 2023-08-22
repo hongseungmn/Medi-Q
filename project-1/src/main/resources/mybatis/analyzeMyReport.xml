@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 매퍼 파일 -->
+<mapper namespace="com.kosmo.springapp.service.AnalyzeMyReportMapper">
+ 	<select id="selectFoodListForMyTakePurpose" parameterType="String" resultType="String">
+ 		SELECT I_FINDINGNAME FROM INGREDIENT WHERE I_FUNC LIKE '%' || #{takePurpose} || '%'
+ 	</select>
+ 	<select id="selectMyFoodList" parameterType="String" resultType="String">
+ 		SELECT nutrient FROM FOODTABLE WHERE productname = #{takeFood}
+ 	</select>
+ 	<select id="selectIngredient_list" resultType="String">
+ 		SELECT i_name FROM INGREDIENT
+ 	</select>
+ 	<select id="selectNutrient_list" resultType="String">
+ 		SELECT n_name FROM nutrient
+ 	</select>
+ 	<insert id="saveAnalyzeReport" parameterType="analyzeReportDto">
+ 		INSERT INTO ANALYZETABLE VALUES (ANALYZETABLE_SQ.NEXTVAL,#{userId},#{takePurposes},#{takeFoods},#{score},SYSDATE)
+ 	</insert>
+ 	<select id="selectAnalyzeReport" parameterType="String" resultType="analyzeReportDto">
+ 		SELECT *
+		FROM (SELECT * FROM ANALYZETABLE WHERE userId= #{id} ORDER BY ANALYZEDATE DESC )
+		WHERE ROWNUM = 1
+ 	</select>
+	<select id="selectAnalyzeReportAll" parameterType="String" resultType="analyzeReportDto">
+		SELECT * FROM ANALYZETABLE WHERE userId= #{id} ORDER BY ANALYZEDATE DESC 
+ 	</select>
+ 	<delete id="deleteAnalyzeReport" parameterType="Int">
+ 		DELETE FROM ANALYZETABLE WHERE analyzeno = #{analyzeno}
+ 	</delete>
+ 	
+ 	<select id="selectAnalyzeReportCount" parameterType="String" resultType="int">
+ 		SELECT COUNT(*) FROM ANALYZETABLE WHERE USERID=#{id}
+ 	</select>
+</mapper>
