@@ -332,7 +332,7 @@
 					},
 					url:'<c:url value="/project/MentalResult.do"/>',
 		    		method:'post',
-		    		dataType:'json'
+		    		//dataType:'json'
 				}).done((result)=>{
 					console.log('success:',result)
 					
@@ -429,7 +429,7 @@
 					},
 					url:'<c:url value="/project/MentalResult.do"/>',
 		    		method:'post',
-		    		dataType:'json'
+		    		//dataType:'json'
 				}).done((result)=>{
 					console.log('success:',result)
 				

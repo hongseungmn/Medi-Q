@@ -210,4 +210,14 @@ public class RestAPIController {
 		return androidServiceImpl.selectFoodByName(foodName.trim());
 	}
 	
+	@GetMapping("/androidGetReviewListById/{userId}")
+	public List<Map> androidGetReviewListById(@PathVariable(name = "userId") String userId) {
+		return reviewServiceImpl.selectReviewByUserId(userId);
+	}
+	
+	@PostMapping("/androidDeleteReview")
+	public int androidDeleteReview(@RequestParam Map map) {
+		return reviewServiceImpl.deleteReview(map);
+	}
+	
 }

@@ -1,5 +1,7 @@
 package com.kosmo.springapp.service.impl;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,10 @@ public class HealthInfoServiceImpl {
 
 	public int selectHealthInfoCount(String id) {
 		return healthInfoMapper.selectHealthInfoCount(id);
+	}
+
+	public void savePredictResultInfo(Map<String, String> data) {
+		healthInfoMapper.savePredictResultInfo(data);
 	}
 
 }

@@ -15,7 +15,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kosmo.springapp.model.HealthInfoDTO;
 import com.kosmo.springapp.model.MemberDTO;
@@ -174,5 +176,20 @@ public class LoadHealthInfoController {
 			
 		}
 		return "LungCancerPredict";
+	}
+	
+	@ResponseBody
+	@PostMapping("/savePrediction")
+	public void savePrediction(@RequestBody Map<String, String> data, HttpServletRequest req) {
+		String token = jwTokensService.getToken(req, tokenName);
+		Map<String, Object> payloads = jwTokensService.getTokenPayloads(token, secretKey);
+		String id = payloads.get("sub").toString();
+		String pDisease = data.get("p_disease");
+        String pResult = data.get("p_result");
+        data.put("id", id);
+        healthInfoServiceImpl.savePredictResultInfo(data);
+		System.out.println(id);
+		System.out.println(pDisease);
+		System.out.println(pResult);
 	}
 }

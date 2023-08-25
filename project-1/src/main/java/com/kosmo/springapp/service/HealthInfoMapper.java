@@ -1,5 +1,7 @@
 package com.kosmo.springapp.service;
 
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import com.kosmo.springapp.model.HealthInfoDTO;
@@ -13,4 +15,6 @@ public interface HealthInfoMapper {
 	HealthInfoDTO selectHealthInfoByUserId(String userId);
 
 	int selectHealthInfoCount(String userId);
+	
+	int savePredictResultInfo(Map<String, String> data);
 }

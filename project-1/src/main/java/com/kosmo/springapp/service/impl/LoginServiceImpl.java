@@ -65,9 +65,13 @@ public class LoginServiceImpl implements LoginService<MemberDTO> {
 	public MemberDTO selectOne(HttpServletRequest req) {
 		String token = jwTokensService.getToken(req, tokenName);
 		Map<String, Object> payloads = jwTokensService.getTokenPayloads(token, secretKey);
-		String id = payloads.get("sub").toString();
 		
-		return mapper.findMember(id);
+		try {
+			String id = payloads.get("sub").toString();
+			return mapper.findMember(id);
+		} catch (NullPointerException e) {
+			return null;
+		}
 	}
 
 	@Override

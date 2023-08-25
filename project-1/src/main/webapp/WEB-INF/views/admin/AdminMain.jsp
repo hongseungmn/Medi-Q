@@ -143,9 +143,9 @@
 	        		</a>
 	        	</li>
 	        	<li>
-	        		<a href="<c:url value="/AdminMain.do"/>" style="display: flex; align-items: center;">
+	        		<a href="<c:url value="/AdminPredict.do"/>" style="display: flex; align-items: center;">
 	        			<i class="fas fa-heartbeat" style="font-size:17px; color:white; display: flex; align-items: center; justify-content: center;"></i>
-	        			&nbsp;&nbsp;질병예측 결과 관리
+	        			&nbsp;&nbsp;질병예측 결과 통계
 	        		</a>
 	        	</li>
 	        </ul>
@@ -165,18 +165,15 @@
 	        <div class="each-container">
 		        <!-- 도표1: 라인 차트 -->
 				<div class="chart-container" style="margin-bottom: 50px;">
-					<p class="text-center" style="font-size: 16px;"><b>일일 회원 통계</b></p>
+					<p class="text-center" style="font-size: 16px; margin-bottom: 8px;"><b>일일 회원 통계</b></p>
 					<div style="height: 200px; width: 550px; margin-left: 30px;">
 				    	<canvas id="lineChart"></canvas>
 				    </div>
 				</div>
 				<!-- 도표2: 라인 차트 -->
 				<div class="chart-container" style="margin-bottom: 50px;">
-					<p class="text-center" style="font-size: 16px;"><b>Top10 영양제 테이블 통계</b></p>
-					<div style="height: 200px; width: 608px;">
-				    	<!-- 혼합 차트를 그릴 캔버스 -->
-    					<canvas id="mixedChart" style="width: 608px; height: 200px;"></canvas>
-				    </div>
+					<p class="text-center" style="font-size: 16px; margin-bottom: 8px;"><b>연령대별 예측확률 통계</b></p>
+					<canvas id="chart" style="width:608px; height:200px;"></canvas><!-- style="height: 550px; width: 570px;" -->
 				</div>
 			</div>
 	        <!-- 2번 div -->
@@ -190,6 +187,27 @@
 			
 		    
 	    </div><!-- 전체 내용 -->
+	    <table id="hiddenData" style="display: none;">
+	        <c:forEach var="info" items="${analyzeInfo_ }" varStatus="loop">
+		        <tr>
+		        	<td>${loop.count}</td>
+		            <td>${info.ID}</td>
+		            <td>${info.AGE_RANGE}</td>
+		            <td data-disease="${info.P_DISEASE}">
+	                    <c:choose>
+	                        <c:when test="${info.P_DISEASE == 'Diabetes'}">당뇨병</c:when>
+	                        <c:when test="${info.P_DISEASE == 'Cardiovascular'}">심혈관질환</c:when>
+	                        <c:when test="${info.P_DISEASE == 'SkinLesion'}">피부질환</c:when>
+	                        <c:when test="${info.P_DISEASE == 'Stroke'}">뇌졸중</c:when>
+	                        <c:when test="${info.P_DISEASE == 'LungCancer'}">폐암</c:when>
+	                        <c:when test="${info.P_DISEASE == 'Parkinson'}">파킨슨병</c:when>
+	                    </c:choose>
+	                </td>
+		            <td>${info.P_RESULT}</td>
+		            <td>${info.P_DATE}</td>
+		        </tr>
+	        </c:forEach>
+	    </table>
 	    
 	</div><!-- 컨테이너 -->
 	
@@ -231,15 +249,11 @@
 	                datasets: [{
 	                        label: '일일 로그인수',
 	                        data: loginData,
-	                        borderColor: 'rgba(255, 99, 132, 1)',
-	                        borderWidth: 1,
 	                        fill: false
 	                    },
 	                    {
 	                        label: '일일 회원가입수',
 	                        data: signUpData,
-	                        borderColor: 'rgba(54, 162, 235, 1)',
-	                        borderWidth: 1,
 	                        fill: false
 	                    }
 	                ]
@@ -311,113 +325,105 @@
 	        }
 	        
 	        fetchDataAndUpdateChart();
-	        getAgeDataAndDrawChart();
 	    });
 	
-	    
-	 // 페이지 로드 시 차트 생성
-	    document.addEventListener('DOMContentLoaded', () => {
+	    // 질병 예측 그래프
+	    // DOM이 로드될 때 실행되는 함수
+	    document.addEventListener("DOMContentLoaded", function() {
+	    	// 질병들의 목록
+	        var diseasesOrder = ['당뇨병', '심혈관질환', '파킨슨병', '뇌졸중', '피부질환', '폐암'];
 
-	     	// select 요소의 변경 이벤트를 감지하여 처리
-	        $("#change").change(function() {
-	            var selectedOption = $(this).val();
-	            if (selectedOption === "영양소 테이블 목록") {
-	                // 영양소 테이블 목록이 선택되었을 때
-	                $("#first").hide(); // first 테이블을 숨김
-	                $("#second").show(); // second 테이블을 보임
-	            } else {
-	                // 영양제 테이블 목록이 선택되었을 때
-	                $("#first").show(); // first 테이블을 보임
-	                $("#second").hide(); // second 테이블을 숨김
+	        // 데이터셋 초기화
+	        var datasets = {};
+
+	        // 각 질병별 데이터셋을 초기화
+	        diseasesOrder.forEach(disease => {
+	            datasets[disease] = {};
+	        });
+
+	        // 연령대 구분
+	        var ageRanges = ['20대 미만', '20대', '30대', '40대', '50대', '60대 이상'];
+
+	        // 각 질병별 연령대 데이터 초기화
+	        Object.keys(datasets).forEach(disease => {
+	            ageRanges.forEach(ageRange => {
+	                datasets[disease][ageRange] = {
+	                    count: 0,
+	                    total: 0
+	                };
+	            });
+	        });
+	
+	     	// HTML 테이블에서 데이터 가져오기 (비표시 상태의 tr로부터 데이터를 가져옴)
+	        var dataFromServer = document.querySelectorAll("#hiddenData tr");
+
+	     	// 각 행별로 데이터 처리
+	        dataFromServer.forEach(function(row) {
+	            // 질병 이름 가져오기
+	            var disease = row.querySelector("[data-disease]").textContent.trim();
+
+	            // 연령대와 확률 값 추출
+	            var ageRange = row.children[2].textContent;
+	            var probability = parseFloat(row.children[4].textContent);
+
+	         // 데이터 유효성 검사
+	            if (!datasets[disease] || !datasets[disease][ageRange]) {
+	                console.error('Invalid data:', disease, ageRange);
+	                return;  // 현재 반복 중단하고 다음 행으로 이동
+	            }
+	            
+	            // 해당 질병과 연령대의 카운트와 총 합 업데이트
+	            datasets[disease][ageRange].count++;
+	            datasets[disease][ageRange].total += probability;
+	        });
+
+	        // 각 질병별 연령대의 평균 확률 계산
+	        Object.keys(datasets).forEach(function(disease) {
+	            Object.keys(datasets[disease]).forEach(function(ageRange) {
+	                datasets[disease][ageRange] = (datasets[disease][ageRange].total || 0) / datasets[disease][ageRange].count;
+	            });
+	        });
+	
+	        // 차트를 그리기 위한 설정
+	        var ctx = document.getElementById('chart').getContext('2d');
+	        var colors = [
+	        	'rgba(255, 99, 132, 0.6)',
+		        'rgba(54, 162, 235, 0.6)',
+		        'rgba(255, 206, 86, 0.6)',
+		        'rgba(75, 192, 192, 0.6)',
+		        'rgba(153, 102, 255, 0.6)',
+		        'rgba(255, 159, 64, 0.6)'
+		        ];
+	
+	     	// 차트 데이터 설정
+	        var chartData = {
+	            labels: ageRanges,
+	            datasets: Object.keys(datasets).map(function(disease, idx) {
+	                return {
+	                    label: disease,
+	                    data: ageRanges.map(function(ageRange) {
+	                        return datasets[disease][ageRange] || 0;
+	                    }),
+	                    fill: false
+	                };
+	            })
+	        };
+	
+	     	// 차트 생성
+	        var chart = new Chart(ctx, {
+	            type: 'line',
+	            data: chartData,
+	            options: {
+	                scales: {
+	                    y: {
+	                        beginAtZero: true
+	                    }
+	                }
 	            }
 	        });
 	    });
-	    
-	 	// 주어진 mixedLabels 변수의 값을 파싱하여 List로 변환하는 함수
-        function parseMixedLabels(mixedLabels) {
-          // 양끝의 대괄호 '['와 ']'를 제거한 후, 쉼표(,)로 구분하여 배열로 분리
-          var labelsArray = mixedLabels.slice(1, -1).split(', ');
-          
-          // 각 라벨에 대한 공백을 제거하고 다시 List로 변환하여 리턴
-          return labelsArray.map(label => label.trim());
-        }
-	 	
-	 	// 혼합 차트 레이블
-        var mixedLabels = '${foodTop10}';
-     	// mixedLabels 값을 파싱하여 List로 변환
-        var parsedLabels = parseMixedLabels(mixedLabels);
-        
-     	// 리뷰 개수
-     	var data1 = '${foodTop10RC}';
-     	var parsedData1 = parseMixedLabels(data1);
-     	 
-     	// 평균 별점
-     	var data2 = '${foodTop10AS}';
-     	var parsedData2 = parseMixedLabels(data2);
-     	
-        // 혼합 차트 데이터 (레이블 10개에 맞게 데이터 갯수도 10개로 맞춤)
-        var mixedData = {
-            labels: parsedLabels,
-            datasets: [
-                {
-                	yAxisID: 'left-y-axis', // 왼쪽 Y축을 사용
-                    type: 'bar',
-                    label: '리뷰 개수(left-y)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1,
-                    data: parsedData1
-                },
-                {
-                	 yAxisID: 'right-y-axis', // 오른쪽 Y축을 사용
-                     type: 'line',
-                     label: '평균 별점(right-y)',
-                     borderColor: 'rgba(255, 159, 64, 1)',
-                     borderWidth: 1,
-                     fill: false,
-                     data: parsedData2
-                }
-            ]
-        };
-
-        // 혼합 차트 그리기
-        var mixedChartCtx = document.getElementById('mixedChart').getContext('2d');
-        var mixedChart = new Chart(mixedChartCtx, {
-        	type: 'bar',
-            data: mixedData,
-            options: {
-                scales: {
-                	'left-y-axis' : { 
-                		type: 'linear',
-                        position: 'left',
-                        title: {
-                            display: true
-                        },
-                        grid: {
-                            display: false
-                        },
-                        ticks: {
-                            beginAtZero: true
-                        }
-                	},
-                	'right-y-axis' : {
-                		type: 'linear',
-                        position: 'right',
-                        title: {
-                            display: true
-                        },
-                        grid: {
-                            display: false
-                        },
-                        ticks: {
-                            beginAtZero: true
-                        }
-                	}
-                }
-            }
-        });
 	     	
-        // 버블 차트
+        // 영양제 분석 버블 차트
         const selectionCountDataJson = JSON.parse('${selectionCountDataJson}');
     	
 	    const labels = ["20대 미만", "20대", "30대", "40대", "50대", "60대 이상"];

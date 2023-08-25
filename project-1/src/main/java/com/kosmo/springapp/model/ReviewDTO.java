@@ -28,7 +28,6 @@ public class ReviewDTO {
 	private String content;
 	private int r_productNo;
 	private Date r_regidate;
-	
 	private String gender;
 	private String birth;
 }

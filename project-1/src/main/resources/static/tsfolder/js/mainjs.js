@@ -132,7 +132,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	            '        </div>' + 
 	            '        <div class="body">' + 
 	            '            <div class="img">' +
-	            '                <img src="http://localhost:9090/images/mainicon.png" width="65" height="70">' +
+	            '                <img src="http://192.168.0.16:9090/images/mainicon.png" width="65" height="70">' +
 	            '           </div>' + 
 	            '            <div class="desc">' + 
 	            '                <div class="ellipsis">서울특별시 금천구<br/> 가산디지털2로 101</div>' + 

@@ -40,7 +40,7 @@ body {
         align-items: center;
         justify-content: space-between;
         width: 100%;
-        height:70px;
+        height:45px;
         padding-bottom:15px;
         border-bottom: 3px solid #F0F0F0;
     }
@@ -93,8 +93,8 @@ body {
     box-sizing: border-box;
     padding-left: 10px;
     padding-right: 30px;
-    margin-top: 17px;
-    margin-bottom: 17px;
+    margin-top: 6px;
+    margin-bottom: 6px;
     text-align: justify;
     font-size: 15px;
 }
@@ -108,13 +108,13 @@ body {
 
 		<div class="container effect-custom-font" >
 		    <div class="mx-5 my-4 display-4 effect-custom-font" style="text-align:center; color:rgba(3, 124, 194,0.7);">심혈관질환 발병확률 예측하기</div>
-			<div class="model-score m-4 pt-5" style="width:80%;height:50px;">※현재 머신러닝의 예측 정확도는 약 <kbd>80%</kbd> 입니다</div>
+			<div class="model-score m-4 pt-5" style="width:80%;height:50px;">※ 현재 머신러닝의 예측능력(F1-Score)은 약 <kbd>80%</kbd> 입니다</div>
 		    <div class="row pt-5">
 		        <div class="col-6" style="max-width: 40%;">
 		            <form id="personInfoForm" class="validation-form" novalidate>
 		            	<div class="tss col mb-3">
 		                    <strong>연령</strong>
-		                    <div class="tss1 d-flex" style="  margin-top:10px; align-items: center;">
+		                    <div class="tss1 d-flex" style="align-items: center; margin-left: 80px;">
 		                    	<input type="text" class="form-control m-2 w-75" style="border:none; text-align: right;" id="age" name="age" placeholder="연령을 입력해주세요" value="${age }" required> 세
 		                    </div>
 		                    <div class="invalid-feedback">
@@ -123,14 +123,14 @@ body {
 		                </div>
 		            	<div class="tss col mb-3">
 		                    <strong>성별</strong>
-		                    <div class="tss1 col ">
+		                    <div class="tss1 col " style="margin-left: 90px; padding-right: 0px;">
 			                    <div class="form-check">
 								  <input class="form-check-input" type="radio" name="gender" id="gender_Man" value="2" <c:if test="${gender eq 'M' }"> checked="checked"</c:if>>
 								  <label class="form-check-label" for="gender_Man">
 								    남성
 								  </label>
 								</div>
-								<div class="form-check">
+								<div class="form-check" style="margin-right: 0px;">
 								  <input class="form-check-input" type="radio" name="gender" id="gender_Woman" value="1" <c:if test="${gender eq 'F' }"> checked="checked"</c:if>>
 								  <label class="form-check-label" for="gender_Woman">
 								    여성
@@ -143,7 +143,7 @@ body {
 	                	</div>
 		                <div class="tss col mb-3">
 		                    <strong>신장</strong>
-		                    <div class="tss1 d-flex" >
+		                    <div class="tss1 d-flex" style="margin-left: 80px;">
 		                    	<input type="text" class="form-control m-2 w-75" style="border:none; text-align: right;" id="height" name="height" placeholder="신장을 입력해주세요" value="${healthInfoDto.height}" required>cm
 		                    </div>
 		                    <div class="invalid-feedback">
@@ -152,7 +152,7 @@ body {
 		                </div>
 		                <div class="tss col mb-3">
 		                    <strong>몸무게</strong>
-		                    <div class="tss1 d-flex" >
+		                    <div class="tss1 d-flex" style="margin-left: 80px;">
 		                    	<input type="text" class="form-control  m-2 w-75" style="border:none; text-align: right;" id="weight" name="weight" placeholder="몸무게를 입력해주세요" value="${healthInfoDto.weight}" required>kg
 		                    </div>
 		                    <div class="invalid-feedback">
@@ -160,10 +160,10 @@ body {
 		                    </div>
 		                </div>
 		                <div class="tss col mb-3">
-		                    <strong style="width: 120px;">혈압<br/>(최저/최고)</strong>
-		                    <div class="tss1 d-flex" style="  margin-top:10px; align-items: center;">
-		                    	<input type="text" class="form-control m-2" style="border:none; width:89px; text-align: right;" id="bloodpress_low" name="bloodpress_low"  placeholder="최저혈압" value="${healthInfoDto.bloodPressure_low}" required> /
-			                    <input type="text" class="form-control m-2" style="border:none; width:88px; text-align: right;" id="bloodpress_high" name="bloodpress_high"  placeholder="최고혈압" value="${healthInfoDto.bloodPressure_high}" required> mmHg
+		                    <strong style="width: 190px;">혈압(최저/최고)</strong>
+		                    <div class="tss1 d-flex" style="align-items: center; padding-left: 4px;">
+		                    	<input type="text" class="form-control m-2" style="border:none; width:69px; text-align: right;" id="bloodpress_low" name="bloodpress_low"  placeholder="최저혈압" value="${healthInfoDto.bloodPressure_low}" required> /
+			                    <input type="text" class="form-control m-2" style="border:none; width:68px; text-align: right;" id="bloodpress_high" name="bloodpress_high"  placeholder="최고혈압" value="${healthInfoDto.bloodPressure_high}" required> mmHg
 		                    </div>
 		                    <div class="invalid-feedback">
 		                        혈압수치를 입력해주세요
@@ -171,7 +171,7 @@ body {
 		                </div>
 		                <div class="tss col mb-3">
 		                    <strong>콜레스테롤</strong>
-		                    <div class="tss1 d-flex" style="  margin-top:10px; align-items: center;">
+		                    <div class="tss1 d-flex" style="align-items: center;">
 		                    	<input type="text" class="form-control m-2 w-75" style="border:none; text-align: right;" id="total_cholesterol" name="total_cholesterol" placeholder="총 콜레스테롤 수치 입력" value="${healthInfoDto.total_cholesterol}" required>mg/dL
 		                    </div>
 		                    <div class="invalid-feedback">
@@ -179,24 +179,24 @@ body {
 		                    </div>
 		                </div>
 		                <div class="tss col mb-3">
-		                    <strong>포도당</strong>
-		                    <div class="tss1 d-flex" style="  margin-top:10px; align-items: center;">
+		                    <strong>혈당</strong>
+		                    <div class="tss1 d-flex" style="align-items: center;">
 		                    	<input type="text" class="form-control  m-2 w-75" style="border:none; text-align: right;" id="glucose" name="glucose" placeholder="포도당 수치를 입력해주세요" value="${healthInfoDto.bloodSugar}" required>mg/dL
 		                    </div>
 		                    <div class="invalid-feedback">
-		                        포도당 수치를 입력해주세요
+		                        혈당 수치를 입력해주세요
 		                    </div>
 		                </div>
 		                <div class="tss col mb-3">
 		                	<strong>흡연 여부</strong>
-		                	 <div class="tss1 col">
+		                	 <div class="tss1 col " style="margin-left: 100px; padding-right: 0px;">
 				                <div class="form-check">
-							  		<input class="form-check-input" type="radio" id="smoke_check1" name="smoke_check" value="0">
+							  		<input class="form-check-input" type="radio" id="smoke_check1" name="smoke_check" value="0" required>
 								  	<label class="form-check-label" for="smoke_check1">
-									    네
+									    예
 								  	</label>
 								</div>
-								<div class="form-check">
+								<div class="form-check" style="margin-right: 0px;">
 							    	<input class="form-check-input" type="radio" id="smoke_check2" name="smoke_check" value="1" >
 								  	<label class="form-check-label" for="smoke_check2">
 									    아니오
@@ -209,14 +209,14 @@ body {
 		                </div>
 		                <div class="tss col mb-3" style="border:none;">
 		                	<strong>음주 여부</strong>
-		                	 <div class="tss1 col ">
+		                	 <div class="tss1 col " style="margin-left: 100px; padding-right: 0px;">
 				                <div class="form-check">
-							  		<input class="form-check-input" type="radio" id="alco_check2" name="alco_check" value="0">
+							  		<input class="form-check-input" type="radio" id="alco_check2" name="alco_check" value="0" required>
 								  	<label class="form-check-label" for="alco_check2">
-									    네
+									    예
 								  	</label>
 								</div>
-								<div class="form-check">
+								<div class="form-check" style="margin-right: 0px;">
 							    	<input class="form-check-input" type="radio" name="alco_check" id="alco_check1" value="1" >
 								  	<label class="form-check-label" for="alco_check1">
 									    아니오
@@ -233,10 +233,9 @@ body {
 		            </form>
 		        </div>
 		
-		        <div class="col-6" style="position:relative; overflow: hidden; height: 100%; ">
+		        <div class="col-6" style="position:relative; overflow: hidden; height: 100%; margin-left: 50px;">
 		            <!--<canvas id="drawing_canvas"></canvas>-->
-		            <img src="<c:url value="/images/tsimages/simhk.png"/>" style="display: block; margin-left:20px; height: 450px; width:500px;" >
-		            <img src="<c:url value="/images/tsimages/simhkhand.jpg"/>" style="display: block; margin-left:130px; height: 350px; width: 300px;" >
+		            <img src="<c:url value="/images/tsimages/cardiovascular.png"/>" style="display: block;margin-top:30px; height:535px; width:505px;" >
 <!-- 		            <div style="position:absolute;  background-color: white;  width:130px; z-index:2;  height: 100px; right: 40px; top:600px;"></div>
 		            <img src="" id="machineImage" style="display: block; margin: auto; position: relative; bottom:-20%; width:100%;height:700px; border-radius:12px;"/> -->
 		        </div>
@@ -255,8 +254,8 @@ body {
 	<div class="modal fade" id="predictionModal" tabindex="-1" aria-labelledby="predictionModalLabel" aria-hidden="true">
 	  <div class="modal-dialog modal-dialog-centered" style="max-width:800px;">
 	    <div class="modal-content">
-	      <div class="modal-header">
-	        <h5 class="modal-title" id="predictionModalLabel" style="">심혈관질환 예측 결과</h5>
+	      <div class="modal-header" style="justify-content: center;">
+	        <h5 class="modal-title" id="predictionModalLabel"><b style="font-size: 24px;">심혈관질환 예측결과</b></h5>
 	      </div>
 	      <div class="modal-body">
 		      <div class="row" style="flex-grow: 1; display: flex;">
@@ -265,16 +264,18 @@ body {
 		        </div>
 		        <div class="col-6" style="width: 400px; height: 400px; flex-grow: 1; display: flex; align-items: center; justify-content: center; padding-left: 0px;">
 						<ul class="pakinul">
-	                		<li class="text-center" style="font-weight:bold; font-size: 20px; margin-bottom: 20px; margin-top: 0px;"><b>심혈관질환 진단과정</b></li>
-	                    	<li><span></span>지속적인 고혈압 상태는 심장과 혈관에 지속적인 부담을 주며, 심혈관 질환의 주요 위험 요인 중 하나입니다.</li>
-	                    	<li><span></span>신체 건강은 고혈압,콜레스테롤,당뇨병 등 다른 위험 요인을 증가시키며<b style="color: #EF605D">과체중일수록 심혈관 질환 위험을 높입니다</b></li>
-	                    	<li><span></span>과도한 음주는 고혈압과 다른 심혈관 질환의 위험을 증가시킬 수 있습니다 다만 <b style="color: #EF605D">적당한 양의 알코올(특히 레드 와인)은 심혈관 건강에 어느정도 도움이 될 수</b>있다 알려졌습니다</li>
-	                	</ul>		            
+	                		<li class="text-center" style="font-weight:bold; font-size: 20px; margin-bottom: 12px; margin-top: 0px;"><b>심혈관질환 예측과정</b></li>
+	               	 		<li style="font-size: 12px;"><span></span><b style="color: #EF605D">연령</b>과 <b style="color: #EF605D">성별</b>은 심혈관 질환의 위험도에 큰 영향을 줍니다. 나이가 들수록, 특히 남성은 조기에, 여성은 폐경 후에 위험이 증가합니다.</li>
+							<li style="font-size: 12px;"><span></span><b style="color: #EF605D">신장</b>과 <b style="color: #EF605D">몸무게</b>는 체질량 지수(BMI)를 결정하는 요인으로 BMI가 증가함에 따라 혈관 내벽의 플라크 형성과 심혈관 질환 위험도가 높아집니다.</li>
+							<li style="font-size: 12px;"><span></span><b style="color: #EF605D">고혈압</b>과 <b style="color: #EF605D">높은 혈당 수치</b>는 혈관 내벽의 손상을 증가시켜 심혈관 질환의 발병을 촉진합니다.</li>
+							<li style="font-size: 12px;"><span></span><b style="color: #EF605D">콜레스테롤</b>과 <b style="color: #EF605D">흡연</b>은 혈관 내벽의 플라크 형성 및 혈관 수축을 초래하여 질환 발병을 촉진합니다.</li>
+							<li style="font-size: 12px;"><span></span><b style="color: #EF605D">과도한 음주</b>는 혈압 상승, 부정맥 및 지방간 등 여러 건강 문제를 유발하여 심혈관 질환의 위험을 높입니다.</li>   	
+						</ul>		            
 	                </div>
 			     </div>
 			 </div>
 			  <div class="modal-footer">
-		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
 		      </div>
 		    </div>
 		  </div>
@@ -315,7 +316,6 @@ function redirectToPrediction() {
                     var smoke = document.querySelector("input[name=smoke_check]:checked").value;
                     var alco = document.querySelector("input[name=alco_check]:checked").value;
                     var age = $('#age').val();
-                    $('.model-score').hide();
                     const Toast = Swal.mixin({
                         toast: true,
                         position: 'center-center',
@@ -358,6 +358,18 @@ function redirectToPrediction() {
                      
                             	var predictionModal = new bootstrap.Modal(document.getElementById('predictionModal'));
                             	predictionModal.show();
+                            	$.ajax({
+                                    type: 'post',
+                                    url: "<c:url value='/savePrediction'/>",
+                                    contentType: 'application/json',
+                                    data: JSON.stringify({
+                                        p_disease: 'Cardiovascular',
+                                        p_result: predictionResult
+                                    }),
+                                    success: function () {
+                                        console.log("데이터 저장 완료");
+                                    }
+                                });
                             }
                         
                         });

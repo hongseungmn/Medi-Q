@@ -401,7 +401,7 @@ public class MypageController {
 		String name = map.get("name").toString();
 		System.out.println("name: "+name);
 		try {
-			String id = jwTokensService.getTokenPayloads(jwTokensService.getToken(req, tokenName), secretKey).get("sub").toString();
+			String id = (String)jwTokensService.getTokenPayloads(jwTokensService.getToken(req, tokenName), secretKey).get("sub");
 			if("result".equals(name)) {//최근 결과값 필요
 				String test = map.get("test").toString();
 				System.out.println("test: "+test);

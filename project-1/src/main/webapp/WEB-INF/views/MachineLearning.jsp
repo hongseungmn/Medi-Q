@@ -52,7 +52,6 @@ body {
 }
 
 .tsaibg {
-	box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
 	border-radius: 10px;
 	position: absolute;
 	top: 385px;
@@ -67,41 +66,41 @@ body {
 			</div>
 
 			<div class="container">
-				<div class="jumbotron row m-2 effect-custom-font" style="position: relative; min-height: 650px;">
-					<span style="font-size: 36px;">나의 질병 예측하기</span>
-					<div class="tsai text-center" style="position: absolute; top:110px; left:-70px;">
+				<div class="jumbotron row m-2 effect-custom-font" style="position: relative; min-height: 650px; padding-left: 0px;">
+					<span style="font-size: 20px; position: absolute; left: -130px; font-weight: 100;">🩺 나의 건강 예측하기<br/>건강검진 정보를 바탕으로 6가지 주요 질병의 발병 위험도를 확인해보세요!</span>
+					<div class="tsai text-center" style="position: absolute; top:110px; left:-150px;">
 						<a href="/DiabetesPredict.do?" style="color:black; font-weight: bold; text-decoration: none;">						
-						<img alt="당뇨" style="border-radius:15px; width: 200px; height: 200px;" src="https://img.freepik.com/free-photo/covid-recovery-center-female-doctor-checking-elder-patient-s-oxygen-level_23-2148847834.jpg?size=626&ext=jpg&ga=GA1.1.236242110.1689157823&semt=sph">
+						<img alt="당뇨" style="vertical-align:baseline; border-radius:15px; width: 200px; height: 200px;" src="https://img.freepik.com/free-photo/covid-recovery-center-female-doctor-checking-elder-patient-s-oxygen-level_23-2148847834.jpg?size=626&ext=jpg&ga=GA1.1.236242110.1689157823&semt=sph">
 						 <br/>당뇨병 예측</a>
 					</div>
-					<div class="tsai text-center" style="position: absolute; top:110px; left:180px;">
+					<div class="tsai text-center" style="position: absolute; top:110px; left:100px;">
 						<a href="/CardiovascularPredict.do?" style="color:black; font-weight: bold; text-decoration: none;">						
-						<img alt="심장질환" style="border-radius:15px; width: 200px; height: 200px;" src="https://img.freepik.com/premium-photo/hands-holding-chest-with-symptom-heart-attack-disease_33807-784.jpg?size=626&ext=jpg&ga=GA1.1.236242110.1689157823&semt=sph">
-						<br/>심장질환 예측</a>
+						<img alt="심혈관질환" style="vertical-align:baseline; border-radius:15px; width: 200px; height: 200px;" src="https://img.freepik.com/premium-photo/hands-holding-chest-with-symptom-heart-attack-disease_33807-784.jpg?size=626&ext=jpg&ga=GA1.1.236242110.1689157823&semt=sph">
+						<br/>심혈관질환 예측</a>
 					</div>
-					<div class="tsai text-center" style="position: absolute; top:110px; left:430px;">
+					<div class="tsai text-center" style="position: absolute; top:110px; left:350px;">
 						<a href="/ParkinsonPredict.do?" style="color:black; font-weight: bold; text-decoration: none;">						
-						<img alt="파킨슨병" style="border-radius:15px; width: 200px; height: 200px;" src="https://img.freepik.com/free-photo/old-patient-suffering-from-parkinson_23-2149370426.jpg?w=740&t=st=1691212317~exp=1691212917~hmac=3d8f58ce6f9c2097610d04da6d31dddc489ba25cfd9012dbc19d7ad57d000c43">
+						<img alt="파킨슨병" style="vertical-align:baseline; border-radius:15px; width: 200px; height: 200px;" src="https://img.freepik.com/free-photo/old-patient-suffering-from-parkinson_23-2149370426.jpg?w=740&t=st=1691212317~exp=1691212917~hmac=3d8f58ce6f9c2097610d04da6d31dddc489ba25cfd9012dbc19d7ad57d000c43">
 						<br/>파킨슨병 예측</a>
 					</div>
-					<div class="tsai text-center" style="position: absolute; top:380px; left:-70px;">
+					<div class="tsai text-center" style="position: absolute; top:380px; left:-150px;">
 						<a href="/StrokePredict.do?" style="color:black; font-weight: bold; text-decoration: none;">						
-						<img alt="뇌졸중" style="border-radius:15px; width: 200px; height: 200px;" src="https://img.freepik.com/premium-photo/handsome-depressed-man-in-casual-clothes_85574-5904.jpg?size=626&ext=jpg&ga=GA1.1.236242110.1689157823&semt=sph">
+						<img alt="뇌졸중" style="vertical-align:baseline; border-radius:15px; width: 200px; height: 200px;" src="https://img.freepik.com/premium-photo/handsome-depressed-man-in-casual-clothes_85574-5904.jpg?size=626&ext=jpg&ga=GA1.1.236242110.1689157823&semt=sph">
 						<br/>뇌졸중 예측</a>
 					</div>
-					<div class="tsai text-center" style="position: absolute; top:380px; left:180px;">
+					<div class="tsai text-center" style="position: absolute; top:380px; left:100px;">
 						<a href="/SkinLesionPredict.do?" style="color:black; font-weight: bold; text-decoration: none;">						
-						<img alt="피부질환" style="border-radius:15px; width: 200px; height: 200px;" src="https://img.freepik.com/free-photo/high-angle-hand-measuring-mole_23-2149359544.jpg?w=1380&t=st=1692320554~exp=1692321154~hmac=cdddd8519497c21824364e98f69b2fc3fa7db9385d300c5d030806790b8a6d36">
+						<img alt="피부질환" style="vertical-align:baseline; border-radius:15px; width: 200px; height: 200px;" src="https://img.freepik.com/free-photo/high-angle-hand-measuring-mole_23-2149359544.jpg?w=1380&t=st=1692320554~exp=1692321154~hmac=cdddd8519497c21824364e98f69b2fc3fa7db9385d300c5d030806790b8a6d36">
 						<br/>피부질환 예측</a>
 					</div>
-					<div class="tsai text-center" style="position: absolute; top:380px; left:430px;">
+					<div class="tsai text-center" style="position: absolute; top:380px; left:350px;">
 						<a href="/LungCancerPredict.do?" style="color:black; font-weight: bold; text-decoration: none;">						
-						<img alt="폐암" style="border-radius:15px; width: 200px; height: 200px;" src="https://img.freepik.com/free-photo/aching-young-ill-slavic-woman-with-scarf-around-her-neck-wearing-winter-hat-coughing-keeping-fist-close-to-mouth-sitting-on-couch-at-living-room_141793-105209.jpg?w=1380&t=st=1692608514~exp=1692609114~hmac=9057f895f81d4410f2fc0c386e01b03aa031a3add72d43a55a9ad469dc71125a">
+						<img alt="폐암" style="vertical-align:baseline; border-radius:15px; width: 200px; height: 200px;" src="https://img.freepik.com/free-photo/aching-young-ill-slavic-woman-with-scarf-around-her-neck-wearing-winter-hat-coughing-keeping-fist-close-to-mouth-sitting-on-couch-at-living-room_141793-105209.jpg?w=1380&t=st=1692608514~exp=1692609114~hmac=9057f895f81d4410f2fc0c386e01b03aa031a3add72d43a55a9ad469dc71125a">
 						<br/>폐암 예측</a>
 					</div>
 				</div>
 				<div class="tsaibg">
-					<img alt="건강" style="width: 540px; height: 530px;" src="/images/nutrient_img/MLbg.png">
+					<img alt="건강" style="width: 620px; height: 530px;" src="https://www.hkn24.com/news/photo/202211/330372_207931_3757.png">
 				</div>
 			</div>
 		</div>

@@ -107,9 +107,9 @@ ul {
 		</div>
 		<div class="container effect-custom-font" >
 		    <div class="mx-5 my-4 display-4 effect-custom-font" style="text-align:center; color:rgba(3, 124, 194,0.7);">당뇨병 발병확률 예측하기</div>
-			<div class="model-score  mx-2 pt-5" style="width:80%;height:80px;background-color:">※현재 머신러닝의 예측 정확도는 약 <kbd>70%</kbd> 입니다</div>
-		    <div class="row pt-5">
-		        <div class="col-6"  style="max-width: 40%;">
+			<div class="model-score mx-2 pt-5" style="width:80%;height:80px;background-color:">※ 현재 머신러닝의 예측능력(F1-Score)은 약 <kbd>70%</kbd> 입니다</div>
+		    <div class="row pt-4">
+		        <div class="col-6"  style="max-width: 40%; margin-top: 70px;">
 		            <form id="personInfoForm" class="validation-form" novalidate>
 			            <div class="tss col mb-3">
 		                    <strong>연령</strong>
@@ -137,17 +137,17 @@ ul {
 		                    	<input type="text" class="form-control  w-75"  style="margin:0px; border:none; text-align: right;" id="glucose" name="glucose" placeholder="포도당 수치를 입력해주세요" value="${healthInfoDto.bloodSugar}" required>&nbsp;mg/dL
 		                    </div>
 		                    <div class="invalid-feedback">
-		                        포도당 수치를 입력해주세요
+		                        혈당 수치를 입력해주세요
 		                    </div>
 		                </div>
 		                
 		                <div class="tss col mb-3">
-		                    <strong>혈압(평균)</strong>
+		                    <strong>평균 혈압</strong>
 		                    <div class="tss1 d-flex" style="  align-items: center;">
 		                   		<input type="text" class="form-control  w-75"  style="margin:0px; border:none; text-align: right;" id="bloodpress" name="bloodpress"  placeholder="혈압수치를 입력해주세요" value="${(healthInfoDto.bloodPressure_high + healthInfoDto.bloodPressure_low) / 2}" required>&nbsp;mmHg
 		                   	</div>
 		                    <div class="invalid-feedback">
-		                        혈압수치를 입력해주세요
+		                        혈압 수치를 입력해주세요
 		                    </div>
 		                </div>
 
@@ -159,10 +159,10 @@ ul {
 		
 		        <div class="col-6">
 		            <!--<canvas id="drawing_canvas"></canvas>-->
-		            <img src="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAxOTA2MDNfOCAg%2FMDAxNTU5NTQ2NzIzMDAy.8xr9Ty7Yf3tA1UaG0T2zbKLOZ1LBhyQr1Id-bhGwPFsg.UM2MNHxWwuRUkI3X8FU7XRQQnxCxLPw9WS8VC-hGDRUg.PNG.care757-7997%2F%25B4%25E7%25B4%25A2%25BA%25B4%25C0%25DA%25B0%25A1%25C1%25F8%25B4%25DC.png&type=sc960_832" id="machineImage" style="width:100%;height:100%;border-radius:10px;"/>
+		            <img src="https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAxOTA0MDJfMjg5%2FMDAxNTU0MTg1NTI2MTky.ASfdGm6TepEVspVKdNDUw7Z6iPruPmIrHlQPh_08ucIg.nYwA9By7e4fq-LBqMjo9sdfZcOul-m2oKdxu1A34uPgg.JPEG.redobody%2F%25B4%25E7%25B4%25A2%25BA%25B4.jpg&type=sc960_832" id="machineImage" style="width:90%;height:80%;margin-left: 60px;"/>
 		        </div>
 		    </div>
-		    <div class="effect-custom-font m-5 py-5">
+		    <div class="effect-custom-font mx-5 mb-5 mt-1 pb-5 pt-2">
 		    	<div class="title mb-5" style="font-size:30px;">
 		    		<img src="<c:url value="/images/mainicon.png"/>" style="width:30px;height:30px;">
 		    		<img src="<c:url value="/images/maintitle.png"/>" style="height:30px;">
@@ -175,8 +175,8 @@ ul {
 		<div class="modal fade" id="predictionModal" tabindex="-1" aria-labelledby="predictionModalLabel" aria-hidden="true">
 		  <div class="modal-dialog modal-dialog-centered" style="max-width:800px;">
 		    <div class="modal-content">
-		      <div class="modal-header">
-		        <h5 class="modal-title" id="predictionModalLabel" style="">당뇨병 예측 결과</h5>
+		      <div class="modal-header" style="justify-content: center;">
+		        <h5 class="modal-title" id="predictionModalLabel"><b style="font-size: 24px;">당뇨병 예측결과</b></h5>
 		      </div>
 		      <div class="modal-body">
 			      <div class="row" style="flex-grow: 1; display: flex;">
@@ -185,16 +185,17 @@ ul {
 			        </div>
 			        <div class="col-6" style="width: 400px; height: 400px; flex-grow: 1; display: flex; align-items: center; justify-content: center; padding-left: 0px;">
 						<ul class="pakinul">
-	                		<li class="text-center" style="font-weight:bold; font-size: 20px; margin-bottom: 20px; margin-top: 0px;"><b>당뇨병 진단과정</b></li>
-	                    	<li><span></span>나이가 들며 인슐린 저항성이 증가하며 이는 2형 당뇨병의 주요원인이며  또한 <b style="color: #EF605D">나이가 들면 신체활동도 감소하게 되어 이는 당뇨병에 위험을 증가</b>시킬 수 있습니다.</li>
-	                    	<li><span></span>BMI가 높으면 2형 당뇨병에 위험이 높아지며 특히 <b style="color: #EF605D">복부비반은 인슐린 정항성 증가와 관련이 있으며 저항성 지방세포 호르몬의 발생을 증가</b>시킵니다.</li>
-	                    	<li><span></span>높은 혈당과 혈압은 당뇨병과 관련이 있으며 이 두질환은 곧 <b style="color: #EF605D">심혈관 질환의 주요 위험 요인으로</b> 이어집니다.</li>
-	                	</ul>		            
+						    <li class="text-center" style="font-weight:bold; font-size: 20px; margin-bottom: 20px; margin-top: 0px;"><b>당뇨병 예측과정</b></li>
+							<li style="font-size: 13px;"><span></span><b style="color: #EF605D">고령자는 인슐린 저항성의 증가와 물리적 활동의 감소</b>로 인해 2형 당뇨병 발병 위험이 증가합니다.</li>
+							<li style="font-size: 13px;"><span></span><b style="color: #EF605D">높은 BMI는 인슐린 반응성 감소</b>를 유도합니다. 특히, 복부 지방은 인슐린 저항성의 주된 원인으로 여겨집니다.</li>
+							<li style="font-size: 13px;"><span></span><b style="color: #EF605D">높게 지속되는 혈당 수치는 당뇨병의 초기 신호</b>일 수 있으며, 이는 인슐린 기능의 장애를 나타냅니다. 동시에 심혈관 질환의 위험도 증가시킵니다.</li>
+							<li style="font-size: 13px;"><span></span><b style="color: #EF605D">고혈압은 혈관의 손상을 초래</b>하여, 당뇨병 환자에게는 합병증 발생 위험성을 크게 높입니다. 따라서 혈압 관리는 필수적입니다.</li>
+						</ul>	            
 	                </div>
 			     </div>
 			 </div>
 			  <div class="modal-footer">
-		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
 		      </div>
 		    </div>
 		  </div>
@@ -229,7 +230,7 @@ ul {
 	                    var bmi = $('#bmi').val();
 	                    var glucose = $('#glucose').val();
 	                    var bloodpress = $('#bloodpress').val();
-	                    $('.model-score').hide();
+	                    var predictionResult = 0;
 	                    const Toast = Swal.mixin({
 	                        toast: true,
 	                        position: 'center-center',
@@ -259,13 +260,27 @@ ul {
                             dataType: 'json',
                             data: JSON.stringify(data),
                             success: function (response) {
-                            	var predictionResult =  (response[0][1]*100).toFixed(1);
+                            	predictionResult =  (response[0][1]*100).toFixed(1);
                             	var predictionResultText = document.getElementById('predictionResultText');
                                 predictionResultText.textContent ='발병확률: '+ predictionResult+' %';                     
                             	var predictionModal = new bootstrap.Modal(document.getElementById('predictionModal'));
                             	predictionModal.show();
+                            	$.ajax({
+                                    type: 'post',
+                                    url: "<c:url value='/savePrediction'/>",
+                                    contentType: 'application/json',
+                                    data: JSON.stringify({
+                                        p_disease: 'Diabetes',
+                                        p_result: predictionResult
+                                    }),
+                                    success: function () {
+                                        console.log("데이터 저장 완료");
+                                    }
+                                });
                             }
                         });
+	                    	
+	                    	
                     }, 1500);
                 }
                 form.classList.add('was-validated');

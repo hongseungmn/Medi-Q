@@ -63,4 +63,8 @@
 	<select id="selectHealthInfoCount" parameterType="String" resultType="int">
 		SELECT COUNT(*) FROM HEALTHINFO WHERE USERID = #{id}
 	</select>
+	
+	<insert id="savePredictResultInfo" parameterType="Map">
+		INSERT INTO PREDICT(P_NO,ID,P_DISEASE,P_RESULT) VALUES (PREDICT_SEQ.NEXTVAL,#{id},#{p_disease},#{p_result})
+	</insert>
 </mapper>

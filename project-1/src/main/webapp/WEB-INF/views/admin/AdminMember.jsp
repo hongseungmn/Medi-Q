@@ -296,9 +296,9 @@
 	        		</a>
 	        	</li>
 	        	<li>
-	        		<a href="<c:url value="/AdminMain.do"/>" style="display: flex; align-items: center;">
+	        		<a href="<c:url value="/AdminPredict.do"/>" style="display: flex; align-items: center;">
 	        			<i class="fas fa-heartbeat" style="font-size:17px; color:white; display: flex; align-items: center; justify-content: center;"></i>
-	        			&nbsp;&nbsp;질병예측 결과 관리
+	        			&nbsp;&nbsp;질병예측 결과 통계
 	        		</a>
 	        	</li>
 	        </ul>
@@ -489,15 +489,11 @@
                 datasets: [{
                         label: '일일 로그인수',
                         data: loginData,
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1,
                         fill: false
                     },
                     {
                         label: '일일 회원가입수',
                         data: signUpData,
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1,
                         fill: false
                     }
                 ]
@@ -593,31 +589,6 @@
 
 		    var labels = Object.keys(sortedAgeData);
 		    var data = Object.values(sortedAgeData);
-		    
-		    var backgroundColor = [
-		        'rgba(255, 99, 132, 0.6)',
-		        'rgba(54, 162, 235, 0.6)',
-		        'rgba(255, 206, 86, 0.6)',
-		        'rgba(75, 192, 192, 0.6)',
-		        'rgba(153, 102, 255, 0.6)',
-		        'rgba(255, 159, 64, 0.6)',
-		        'rgba(255, 0, 0, 0.6)',
-		        'rgba(0, 255, 0, 0.6)',
-		        'rgba(0, 0, 255, 0.6)',
-		        'rgba(128, 0, 128, 0.6)',
-		    ];
-		    var borderColor = [
-		        'rgba(255, 99, 132, 1)',
-		        'rgba(54, 162, 235, 1)',
-		        'rgba(255, 206, 86, 1)',
-		        'rgba(75, 192, 192, 1)',
-		        'rgba(153, 102, 255, 1)',
-		        'rgba(255, 159, 64, 1)',
-		        'rgba(255, 0, 0, 1)',
-		        'rgba(0, 255, 0, 1)',
-		        'rgba(0, 0, 255, 1)',
-		        'rgba(128, 0, 128, 1)',
-		    ];
 		
 		    new Chart(document.getElementById('pieChart'), {
 		        type: 'pie',
@@ -625,8 +596,6 @@
 		            labels: labels,
 		            datasets: [{
 		                data: data,
-		                backgroundColor: backgroundColor.slice(0, labels.length),
-		                borderColor: borderColor.slice(0, labels.length),
 		                borderWidth: 1
 		            }]
 		        },

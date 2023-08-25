@@ -799,7 +799,7 @@ html, body {
 <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/gsap-latest-beta.min.js"></script>
 <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/CSSRulePlugin3.min.js"></script>
 <!-- 지도 스크립트 키 -->
-<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=536a268ae501933d1ccf30618f1b4258&libraries=services"></script> 
+<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=52555467618bde712ca6a08521dcc788&libraries=services"></script> 
  <!-- 메인 js-->
 <script src="<c:url value="/tsfolder/js/mainjs.js"/>" ></script>
 <script>

@@ -60,10 +60,10 @@ public interface AdminMapper {
 	//////////////////////////////////////////////////분석결과
 	
 	// 분석 결과 가져오기
-	
 	List<Map<String, Object>> getInfoFromAnalyzeTable();
 	
-	
+	// 분석 결과 가져오기
+	List<Map<String, Object>> getInfoFromPredictTable();
 	
 	
 	

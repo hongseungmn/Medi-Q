@@ -146,7 +146,7 @@ ul {
 			<div class="" style="font-size:32px; margin-left: 180px; font-weight: bold; line-height: 50px;">인공지능을 통한<br/> <span style="color:#EF605D;">MEDI-Q</span> 질병예측 시스템</div>
 		</div>
 		<div class="mx-5 my-4 display-4 effect-custom-font" style="text-align:center; color:rgba(3, 124, 194,0.7); font-weight: bold;">파킨슨병 발병확률 예측하기</div>
-		<div class="model-score  mx-2 pt-5 mb-4" style="width:80%;height:80px; font-weight: bold;background-color:">※현재 머신러닝의 예측 정확도는 약 <kbd style="font-weight: normal;">85%</kbd> 입니다</div>
+		<div class="model-score  mx-2 pt-5 mb-4" style="width:80%;height:80px; font-weight: bold;background-color:">※ 현재 머신러닝의 예측능력(F1-Score)은 약 <kbd class="px-2" style="font-weight: normal;">85%</kbd> 입니다</div>
 		<div class="d-flex" style="flex-direction: row; position: relative;">
 			<div style="font-size: 18px;font-weight: bold; width: 100px; height: 100px; position: absolute; top:10px; left:10px;">
 				<img src="https://cdn-icons-png.flaticon.com/512/204/204574.png" style="width: 100px; height: 100px;" ><br/>
@@ -191,7 +191,7 @@ ul {
 	            </div>
 	            <div class="col-6" style="width: 400px; height: 400px; flex-grow: 1; display: flex; align-items: center; justify-content: center; padding-left: 0px;">
 	                <ul class="pakinul">
-	                	<li class="text-center" style="font-weight:bold; font-size: 25px; margin-bottom: 40px; margin-top: 0px;"><b>파킨슨병 진단과정</b></li>
+	                	<li class="text-center" style="font-weight:bold; font-size: 25px; margin-bottom: 40px; margin-top: 0px;"><b>파킨슨병 예측과정</b></li>
 	                    <li><span></span>MEDI-Q는 파킨슨병 진행시 발생하는 <b style="color: #EF605D">중추신경계 손상에 의한 떨림 증상을 기반으로</b> 머신러닝 알고리즘이 수집된 데이터를 분석하여 건강상태를 확인합니다.</li>
 	                    <li><span></span>사용자의 손떨림을 모니터링하고, 그림판에 <b style="color: #EF605D">그린 나선을 분석하여 현재 파킨슨병 진행상황을 예측합니다.</b></li>
 	                    <li><span></span>나선 그리기 진단시스템을 이용해 환자와 의료 전문가는 증상 변화를 빠르게 파악하고 치료 계획을 조정할 수 있습니다.</li>
@@ -268,11 +268,12 @@ document.querySelector(".close1").addEventListener("click", function() {
             // 받아온 이미지 base64 데이터
             console.log(response.score);
             var imageBase64 = response.image_base64;
-
+			
             // 이미지 생성 및 모달 내부에 화면에 출력
             var imageTag = '<img src="data:image/png;base64,' + imageBase64 + '" style="width:400px; height:400px; padding:0 15px; border:1px solid black;" alt="Image">';
             $('#modal-content').html(imageTag);
         });
+
     }
     
     const canvas = document.getElementById("jsCanvas");

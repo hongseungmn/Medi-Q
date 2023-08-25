@@ -292,7 +292,7 @@ body{
       console.log("noEffect : ",noEffect);
       console.log("content : ",content);
       $.ajax({
-        url : "http://localhost:9090/WriteReview.do",
+        url : "http://192.168.0.16:9090/WriteReview.do",
         contentType: "application/json; charset=utf-8;",
         method : 'post',
         data : JSON.stringify({

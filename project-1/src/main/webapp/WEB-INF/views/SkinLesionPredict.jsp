@@ -181,7 +181,7 @@ ul {
 			<div class="" style="font-size:32px; margin-left: 180px; font-weight: bold; line-height: 50px;">인공지능을 통한<br/> <span style="color:#EF605D;">MEDI-Q</span> 질병예측 시스템</div>
 		</div>
 		<div class="mx-5 my-4 display-4 effect-custom-font" style="text-align:center; color:rgba(3, 124, 194,0.7); font-weight: bold;">피부질환 발병확률 예측하기</div>
-		<div class="model-score  mx-2 pt-5 mb-4" style="width:80%;height:80px; font-weight: bold;background-color:">※현재 머신러닝의 예측 정확도는 약 <kbd style="font-weight: normal;">85%</kbd> 입니다</div>
+		<div class="model-score  mx-2 pt-5 mb-4" style="width:80%;height:80px; font-weight: bold;background-color:">※ 현재 딥러닝의 예측능력(F1-Score)은 약 <kbd class="px-2" style="font-weight: normal;">90%</kbd> 입니다</div>
 		<div class="d-flex" style="flex-direction: row; position: relative;">
 			<div id="imageContainer" class="canvas" style="position: relative; border:3px solid black; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.68);">
 				<div class="controls__btns" style="margin-top: 600px; text-align: center; justify-content: center; display: flex;">
@@ -234,8 +234,8 @@ ul {
 	            </div>
 	            <div class="col-6" style="width: 400px; height: 400px; flex-grow: 1; display: flex; align-items: center; justify-content: center; padding-left: 0px;">
 	                <ul class="pakinul">
-	                	<li class="text-center" style="font-weight:bold; font-size: 25px; margin-bottom: 40px; margin-top: 0px;"><b>피부질환 진단과정</b></li>
-						<li style="font-size: 15px;"><span></span>MEDI-Q는 <b style="color: #EF605D">다양한 피부질환을 훈련한 딥러닝 모델을 활용하여</b> 사용자의 피부 사진을 분석하고 질환을 예측합니다.</li>
+	                	<li class="text-center" style="font-weight:bold; font-size: 25px; margin-bottom: 40px; margin-top: 0px;"><b>피부질환 예측과정</b></li>
+						<li style="font-size: 15px;"><span></span><b style="color: #EF605D">MEDI-Q는 다양한 피부질환 사례를 훈련한 딥러닝 모델을 활용하여</b> 사용자의 피부 사진을 분석하고 질환을 예측합니다.</li>
 						<li style="font-size: 15px;"><span></span>제공된 사진 내의 <b style="color: #EF605D">피부 병변(또는 점)을 확인해 7가지 주요 피부질환 중 하나로 식별합니다.</b></li>
 						<li style="font-size: 15px;"><span></span>이 시스템은 피부의 초기 진단 정보를 제공하지만, 정확한 진단과 치료를 위해서는 전문의와의 상담이 필수적입니다.</li>
 					</ul>
@@ -295,17 +295,17 @@ ul {
 	    
 	    //질병의 한글 이름과 해당하는 코드를 매핑
 	    var diseaseNamesKorean = {
-    	    "akiec": "광선 각화증",	//"광선 케라토시스/보웬병(자외선 노출, 초기 피부암)",
+    	    "akiec": "광선 각화증",	//"광선 각화증/보웬병(자외선 노출, 초기 피부암)",
     	    "bcc": "기저세포암",	//"기저세포암(가장 흔한 피부암)",
-    	    "bkl": "지루성 각화증",	//"양성 케라토시스 유사 병변",
-    	    "df": "피부 섬유종",	//"피부 섬유종(양성 종양)",
-    	    "mel": "흑색종",	//"흑색종(피부암)",
-    	    "nv": "갈색 세포모반",	//"갈색 세포모반(양성 종양)",
-    	    "vasc": "혈관종"	//"혈관 병변(혈관종)"
+    	    "bkl": "지루성 각화증",	//"지루성 각화증(검버섯)",
+    	    "df": "피부 섬유종",	//"피부 섬유종(쥐젖)",
+    	    "mel": "흑색종",		//"흑색종(피부암)",
+    	    "nv": "갈색 세포모반",	//"갈색 세포모반(점)",
+    	    "vasc": "혈관종"		//"혈관종"
     	};
 
 	    $.ajax({
-	        url: "http://localhost:5000/SkinLesionModel",
+	        url: "http://192.168.0.16/SkinLesionModel",
 	        data: formData,
 	        method: "post",
 	        processData: false,
@@ -319,12 +319,31 @@ ul {
 	                probability: parseFloat(response.all_probabilities[disease])
 	            });
 	        }
-
+	        
 	        // 확률 값에 따라 내림차순으로 정렬
 	        allProbabilities.sort(function(a, b) {
 	            return b.probability - a.probability;
 	        });
+	        
+	        // "akiec", "bcc", "mel"의 확률을 더함
+    		var predictionResult = Math.round(((response.all_probabilities.akiec || 0) * 100 + 
+                           					   (response.all_probabilities.bcc || 0) * 100 + 
+                           					   (response.all_probabilities.mel || 0) * 100) * 10) / 10;
 
+	        // AJAX 요청을 사용하여 predictionResult 값을 서버에 저장
+	        $.ajax({
+	            type: 'post',
+	            url: "<c:url value='/savePrediction'/>",
+	            contentType: 'application/json',
+	            data: JSON.stringify({
+	                p_disease: 'SkinLesion',
+	                p_result: predictionResult
+	            }),
+	            success: function () {
+	                console.log("데이터 저장 완료");
+	            }
+	        });
+	        
 	     	// 결과 문자열 생성
 	        var result = "<p style='font-size:20px; font-weight:bold;'>예측된 피부 질환</p><br/>";
 	        result += "<span style='color:#EF605D; font-weight:bold;'>" + diseaseNamesKorean[allProbabilities[0].disease] + " </span>";

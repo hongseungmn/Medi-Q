@@ -194,7 +194,6 @@
 		    I_VIEW
 	</select>
 	
-	
 	<!-- 영양소 검색수 -->
 	<select id="getNutTop10s" resultType="int" parameterType="String">
 	    SELECT COUNT(*) AS sCount
@@ -219,7 +218,21 @@
 	    ORDER BY A.ANALYZEDATE DESC
 	</select>
 	
-	
+	<select id="getInfoFromPredictTable" resultType="Map">
+		SELECT 
+		    P.ID,
+		    P.P_DISEASE,
+		    P.P_RESULT,
+		    P.P_DATE,
+		    M.BIRTH
+		FROM
+		    PREDICT P
+		INNER JOIN
+		    MEMBER M
+		ON
+		    P.ID = M.ID
+	    ORDER BY P.P_DATE DESC
+	</select>
 	
 	
 	

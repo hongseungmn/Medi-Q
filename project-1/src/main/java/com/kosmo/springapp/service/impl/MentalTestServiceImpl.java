@@ -19,8 +19,8 @@ public class MentalTestServiceImpl {
 	}
 	
 	public int insertResult(Map map) {
-		String id = map.get("id").toString();
-		String name = map.get("name").toString();
+		String id = (String)map.get("id");
+		String name = (String)map.get("name");
 		int flag = mapper.selectFlag(id);
 		
 		map.put("id", id);

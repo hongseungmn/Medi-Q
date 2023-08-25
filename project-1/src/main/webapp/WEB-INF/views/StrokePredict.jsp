@@ -101,8 +101,8 @@ body {
     box-sizing: border-box;
     padding-left: 10px;
     padding-right: 30px;
-    margin-top: 17px;
-    margin-bottom: 17px;
+    margin-top: 10px;
+    margin-bottom: 10px;
     text-align: justify;
     font-size: 15px;
 }
@@ -115,15 +115,14 @@ body {
 		</div>
 		<div class="container effect-custom-font" >
 		    <div class="mx-5 my-4 display-4 effect-custom-font" style="text-align:center; color:rgba(3, 124, 194,0.7);">뇌졸중 발병확률 예측하기</div>
-			<div class="model-score  mx-2 pt-5" style="width:80%;height:80px;background-color:">※현재 머신러닝의 예측 정확도는 약 <kbd>85%</kbd> 입니다</div>
+			<div class="model-score  mx-2 pt-5" style="width:80%;height:80px;background-color:">※ 현재 머신러닝의 예측능력(F1-Score)은 약 <kbd>85%</kbd> 입니다</div>
 		    <div class="row pt-5">
 		        <div class="col-6">
 		            <form id="personInfoForm" class="validation-form" method="post" novalidate>
-		            
 		                <div class="tss col mb-3">
 		                    <strong>연령</strong>
-		                    <div class="tss1 d-flex" style="  align-items: center;">
-		                    	<input type="text" class="form-control ml-3 w-75" style="margin:0px; border:none; text-align: right;" id="age" name="age" pattern="[0-9]+" placeholder="나이을 입력해주세요" value="${age }" required> 세
+		                    <div class="tss1 d-flex" style="align-items: center;margin-right: 170px;justify-content: flex-end;" >
+		                    	<input type="text" class="form-control ml-3 w-25" style="margin:0px; border:none; text-align: right;" id="age" name="age" pattern="[0-9]+" placeholder="나이을 입력해주세요" value="${age }" required><b style="font-size: 16px;"> 세</b>
 		                    </div>
 		                    <div class="invalid-feedback">
 		                        연령을 입력해주세요
@@ -131,9 +130,9 @@ body {
 		                </div>
 		                <div class="tss col mb-3">
 		                    <strong>성별</strong>
-		                    <div class="horizontal-radio">
-			                    <div class="form-check">
-								    <input class="form-check-input" type="radio" name="gender" id="gender_Man" value="Male" <c:if test="${gender eq 'M' }"> checked="checked"</c:if>>
+		                    <div class="horizontal-radio" style="margin-right: 100px;">
+			                    <div class="form-check" style="margin-right: 60px;">
+								    <input class="form-check-input" type="radio" name="gender" id="gender_Man" value="Male" <c:if test="${gender eq 'M' }"> checked="checked"</c:if> required>
 								    <label class="form-check-label" for="gender_Man">
 								    남성
 								    </label>
@@ -149,22 +148,20 @@ body {
 		                        성별을 체크해 주세요
 		                    </div>
 		                </div>
-		                
 		                <div class="tss col mb-3">
-		                    <strong>혈당</strong>
-		                    <div class="tss1 d-flex" style="  align-items: center;">
-		                    	<input type="text" class="form-control ml-3 w-75" style="margin:0px; border:none; text-align: right;" id="glucose" name="glucose" placeholder="혈당 수치를 입력해주세요" value="${healthInfoDto.bloodSugar}" required> mg/dL
+		                    <strong>혈당 수치</strong>
+		                    <div class="tss1 d-flex" style="  align-items: center;padding-right: 155px;justify-content: flex-end;">
+		                    	<input type="text" class="form-control ml-3 w-25" style="margin:0px; border:none; text-align: right;" id="glucose" name="glucose" placeholder="혈당 수치를 입력해주세요" value="${healthInfoDto.bloodSugar}" required> mg/dL
 		                    </div>
 		                    <div class="invalid-feedback">
 		                        혈당 수치를 입력해주세요
 		                    </div>
 		                </div>
-		                
 						<div class="tss col mb-3">
 						    <strong>결혼 여부</strong>
-						    <div class="horizontal-radio">
-							    <div class="form-check">
-							        <input class="form-check-input" type="radio" name="everMarried" id="everMarriedYes" value="Yes">
+						    <div class="horizontal-radio" style="margin-right: 100px;">
+							    <div class="form-check" style="margin-right: 60px;">
+							        <input class="form-check-input" type="radio" name="everMarried" id="everMarriedYes" value="Yes" required>
 							        <label class="form-check-label" for="everMarriedYes">예</label>
 							    </div>
 							    <div class="form-check">
@@ -172,13 +169,15 @@ body {
 							        <label class="form-check-label" for="everMarriedNo">아니오</label>
 							    </div>
 							</div>
+							<div class="invalid-feedback">
+		                        결혼 여부를 입력해주세요
+		                    </div>
 						</div>
-						
 						<div class="tss col mb-3">
 						    <strong>직업 유형</strong>
 						    <div class="horizontal-radio">
 							    <div class="form-check">
-							        <input class="form-check-input" type="radio" name="workType" id="workTypePrivate" value="Private">
+							        <input class="form-check-input" type="radio" name="workType" id="workTypePrivate" value="Private" required>
 							        <label class="form-check-label" for="workTypePrivate">사기업</label>
 							    </div>
 							    <div class="form-check">
@@ -198,22 +197,26 @@ body {
 							        <label class="form-check-label" for="workTypeNeverWorked">무직</label>
 							    </div>
 						    </div>
+						    <div class="invalid-feedback">
+		                        직업 유형을 입력해주세요
+		                    </div>
 						</div>
-						
 						<div class="tss col mb-3">
 						    <strong>거주 유형</strong>
-						    <div class="horizontal-radio">
-							    <div class="form-check">
-							        <input class="form-check-input" type="radio" name="residenceType" id="residenceTypeRural" value="Urban">
-							        <label class="form-check-label" for="residenceTypeRural">도시</label>
+						    <div class="horizontal-radio" style="margin-right: 60px;">
+							    <div class="form-check" style="margin-right: 60px;">
+							        <input class="form-check-input" type="radio" name="residenceType" id="residenceTypeRural" value="Urban" required>
+							        <label class="form-check-label" for="residenceTypeRural">도심 지역</label>
 							    </div>
 							    <div class="form-check">
 							        <input class="form-check-input" type="radio" name="residenceType" id="residenceTypeUrban" value="Rural">
-							        <label class="form-check-label" for="residenceTypeUrban">시골</label>
+							        <label class="form-check-label" for="residenceTypeUrban">농촌 지역</label>
 							    </div>
 						    </div>
+						    <div class="invalid-feedback">
+		                        거주 유형을 입력해주세요
+		                    </div>
 						</div>
-
 		                <div class="mb-4"></div>
 		                <button class="btn btn-primary btn-lg btn-block" type="submit" data-bs-toggle="modal" data-bs-target="#predictionModal">예측해보기</button>
 		            </form>
@@ -221,7 +224,7 @@ body {
 		
 		        <div class="col-6">
 		            <!--<canvas id="drawing_canvas"></canvas>-->
-		            <img src="https://blog.kakaocdn.net/dn/bsaKv7/btqENswXzXV/4SrX3MKFb0dUvOICnKg0y0/img.gif" id="machineImage" style="width:100%;height:100%;border-radius:20px;padding: 0px 50px 0px 50px;"/>
+		            <img src="/images/tsimages/stroke.png" id="machineImage" style="width:100%;height:100%;border-radius:20px;padding: 0px 25px 0px 25px;"/>
 		        </div>
 		    </div>
 		    <div class="effect-custom-font m-5 py-5">
@@ -230,16 +233,16 @@ body {
 		    		<img src="<c:url value="/images/maintitle.png"/>" style="height:30px;">
 												와 다른 질병을 예측해 보아요!</div>
 		    		<div class="p-2" style="cursor: pointer;border-radius:40px;font-size:20px;background-color:#ff9558; font-weight: bold; text-align: center;" onclick='redirectToPrediction()'>다른 질병 예측하러 가기</div>
-		    </div>
+			    </div>
+			</div>
 		</div>
-	</div>
 	
 	
 	<div class="modal fade" id="predictionModal" tabindex="-1" aria-labelledby="predictionModalLabel" aria-hidden="true">
 	  <div class="modal-dialog modal-dialog-centered" style="max-width:800px;">
 	    <div class="modal-content">
-	      <div class="modal-header">
-	        <h5 class="modal-title" id="predictionModalLabel" style="">뇌졸증 예측 결과</h5>
+	      <div class="modal-header" style="justify-content: center;">
+	        <h5 class="modal-title" id="predictionModalLabel"><b style="font-size: 24px;">뇌졸중 예측결과</b></h5>
 	      </div>
 	      <div class="modal-body">
 		      <div class="row" style="flex-grow: 1; display: flex;">
@@ -248,16 +251,17 @@ body {
 		        </div>
 		        <div class="col-6" style="width: 400px; height: 400px; flex-grow: 1; display: flex; align-items: center; justify-content: center; padding-left: 0px;">
 					<ul class="pakinul">
-                		<li class="text-center" style="font-weight:bold; font-size: 20px; margin-bottom: 20px; margin-top: 0px;"><b>뇌졸증 진단과정</b></li>
-                    	<li><span></span>뇌졸증의 위험은 나이가 들면서 증가합니다. 특히 <b style="color: #EF605D">65세 이상의 노인에게 뇌졸증 위험은 높지만 현재 젊은 사람들에게서도 발생하며 실제로 뇌졸증 발생률이 증가하는 추세</b>입니다.</li>
-                    	<li><span></span>남성은 여성보다 발생률이 약간 높지만 오래 살기 때문에 생애동안 뇌졸증에 걸릴 확률이 더 높으며 <b style="color: #EF605D">폐경 후 여성의 뇌졸증은 증가하며 호르몬 변화</b>와 관련이 있습니다.</li>
-                    	<li><span></span>당뇨병은 뇌졸증의 주요 위험 요인이며 높은 혈당은 혈관 손상 및 혈전이 형성되거나 혈관이 막히게 되며 <b style="color: #EF605D">당뇨병 환자는 뇌졸증 위험이 2~4배 높아집니다</b>.</li>
-                	</ul>		            
+                		<li class="text-center" style="font-weight:bold; font-size: 18px; margin-bottom: 10px; margin-top: 0px;"><b>뇌졸중 예측과정</b></li>
+              			<!-- <li style="font-size: 12px;"><span></span><b style="color: #EF605D">MEDI-Q는 다양한 뇌졸중 사례를 학습한 머신러닝 모델을 활용</b>하여 사용자의 건강상태를 분석하고 질환을 예측합니다.</li> -->
+                        <li style="font-size: 12px;"><span></span><b style="color: #EF605D">연령</b>은 뇌졸중의 주요 위험 요인 중 하나입니다. 특히 55세 이후 발병률이 10년마다 두 배씩 증가하는 경향이 있습니다.</li>
+						<li style="font-size: 12px;"><span></span><b style="color: #EF605D">성별</b>에 따라 뇌졸중의 위험도 다를 수 있습니다. 남성은 발생률이 약간 높지만 여성이 오래 살기 때문에 뇌졸중에 걸린 사례가 더 많았습니다. 또한 폐경 후의 여성에서는 뇌졸중 위험이 증가합니다.</li>
+						<li style="font-size: 12px;"><span></span><b style="color: #EF605D">혈당 수치</b>는 뇌졸중의 주요 위험 요인 중 하나입니다. 높은 혈당 수치는 뇌졸중 위험을 증가시키며, 특히 126 이상의 당뇨병 환자는 뇌졸중 위험이 2~4배 높아집니다.</li>
+						<li style="font-size: 12px;"><span></span><b style="color: #EF605D">결혼 여부, 직업 유형, 거주 유형</b> 등의 사회적, 경제적 요인도 뇌졸중의 위험에 영향을 미칠 수 있습니다. 직업에 따른 스트레스와 거주지역에 따른 의료시설 유무가 영향을 미칩니다.</li></ul>		            
                 </div>
 		     </div>
 		 </div>
 		  <div class="modal-footer">
-	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
 	      </div>
 	    </div>
 	  </div>
@@ -289,7 +293,6 @@ body {
 	                    var everMarried = $("input[name='everMarried']:checked").val();
 	                    var workType = $("input[name='workType']:checked").val();
 	                    var residenceType = $("input[name='residenceType']:checked").val();
-	                    $('.model-score').hide();
 	                    const Toast = Swal.mixin({
 	                        toast: true,
 	                        position: 'center-center',
@@ -329,6 +332,18 @@ body {
 	                     
 	                            	var predictionModal = new bootstrap.Modal(document.getElementById('predictionModal'));
 	                            	predictionModal.show();
+	                            	$.ajax({
+	                                    type: 'post',
+	                                    url: "<c:url value='/savePrediction'/>",
+	                                    contentType: 'application/json',
+	                                    data: JSON.stringify({
+	                                        p_disease: 'Stroke',
+	                                        p_result: predictionResult
+	                                    }),
+	                                    success: function () {
+	                                        console.log("데이터 저장 완료");
+	                                    }
+	                                });
 	                            }
 	                        });
 	                    }, 1500);

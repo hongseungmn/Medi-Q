@@ -60,38 +60,6 @@ public class AdminController {
         }
         model.addAttribute("foodInfos", foodInfos);
         
-        // 영양제 Top10 이름
-        List<String> foodTop10 = new ArrayList<>();
-        for (int i = 0; i < Math.min(foodInfos.size(), 10); i++) {
-            Map<String, Object> foodInfo = foodInfos.get(i);
-            String productName = getStringValue(foodInfo.get("PRODUCTNAME"), 4);
-            foodTop10.add(productName);
-        }
-        model.addAttribute("foodTop10", foodTop10);
-
-        // 영양제 Top10 리뷰개수 
-        List<String> foodTop10RC = new ArrayList<>();
-        for (int i = 0; i < Math.min(foodInfos.size(), 10); i++) {
-            Map<String, Object> foodInfo = foodInfos.get(i);
-            String REVIEW_COUNT = getStringValue(foodInfo.get("REVIEW_COUNT"), 3);
-            foodTop10RC.add(REVIEW_COUNT);
-        }
-        model.addAttribute("foodTop10RC", foodTop10RC);
-        
-        // 영양제 Top10 평균별점
-        List<String> foodTop10AS = new ArrayList<>();
-        for (int i = 0; i < Math.min(foodInfos.size(), 10); i++) {
-            Map<String, Object> foodInfo = foodInfos.get(i);
-            String AVG_STARSCORE = getStringValue(foodInfo.get("AVG_STARSCORE"), 3);
-            // 새로운 코드 추가: 소수점 아래 둘째 자리를 소수점 아래 첫째 자리로 변환
-            int dotIndex = AVG_STARSCORE.indexOf(".");
-            if (dotIndex != -1 && AVG_STARSCORE.length() > dotIndex + 1) {
-                AVG_STARSCORE = AVG_STARSCORE.substring(0, dotIndex + 2);
-            }
-            foodTop10AS.add(AVG_STARSCORE);
-        }
-        model.addAttribute("foodTop10AS", foodTop10AS);
-        
 		// 버블 차트
         // 분석 정보 가져오기
     	List<Map<String, Object>> analyzeInfo = adminMapper.getInfoFromAnalyzeTable();
@@ -189,6 +157,64 @@ public class AdminController {
 
         model.addAttribute("selectionCountDataJson", selectionCountDataJson);
 		
+        // 질병예측 결과
+    	// 분석 정보 가져오기
+    	List<Map<String, Object>> analyzeInfo_ = adminMapper.getInfoFromPredictTable();
+    	
+    	// 현재 날짜를 가져와서 연령 계산에 사용합니다.
+        LocalDate currentDate_ = LocalDate.now();
+        
+        // SimpleDateFormat을 이용해 날짜 포맷 지정
+        SimpleDateFormat dateFormat_ = new SimpleDateFormat("yyyy-MM-dd");
+
+        for (Map<String, Object> row : analyzeInfo_) {
+        	
+        	// 행에서 분석일 정보를 추출합니다.
+            Timestamp analyzedTimestamp = (Timestamp) row.get("P_DATE");
+            if (analyzedTimestamp != null) {
+                // Timestamp를 Date로 변환하고, 시분초를 제외한 날짜 문자열로 변환합니다.
+                String analyzedDate = dateFormat_.format(analyzedTimestamp);
+
+                // 분석일 정보를 해당 행의 맵에 추가합니다.
+                row.put("P_DATE", analyzedDate);
+            }
+            
+            // 행에서 생년월일 정보를 추출합니다.
+            Timestamp birthTimestamp = (Timestamp) row.get("BIRTH");
+            if (birthTimestamp != null) {
+            	
+                // Timestamp를 Date로 변환합니다.
+                Date birthDate = new Date(birthTimestamp.getTime());
+
+                // 생년월일을 LocalDate로 변환합니다.
+                LocalDate birthLocalDate = birthDate.toLocalDate();
+
+                // 나이 계산
+                int age = Period.between(birthLocalDate, currentDate_).getYears();
+
+                // 연령대 그룹화
+                String ageRange;
+                if (age < 20) {
+                    ageRange = "20대 미만";
+                } else if (age >= 20 && age < 30) {
+                    ageRange = "20대";
+                } else if (age >= 30 && age < 40) {
+                    ageRange = "30대";
+                } else if (age >= 40 && age < 50) {
+                    ageRange = "40대";
+                } else if (age >= 50 && age < 60) {
+                    ageRange = "50대";
+                } else {
+                    ageRange = "60대 이상";
+                }
+
+                // 연령대 정보를 해당 행의 맵에 추가합니다.
+                row.put("AGE_RANGE", ageRange);
+            }
+        }
+
+        model.addAttribute("analyzeInfo_", analyzeInfo_);
+        
 		
 		
 	    return "admin/AdminMain";
@@ -589,7 +615,7 @@ public class AdminController {
         List<String> nutTop10 = new ArrayList<>();
         for (int i = 0; i < Math.min(mergedInfos.size(), 10); i++) {
             Map<String, Object> mergedInfo = mergedInfos.get(i);
-            String name = getStringValue(mergedInfo.get("name"), 4);
+            String name = getStringValue(mergedInfo.get("name"), 5);
             nutTop10.add(name);
         }
         model.addAttribute("nutTop10", nutTop10);
@@ -598,7 +624,7 @@ public class AdminController {
         List<String> nutTop10v = new ArrayList<>();
         for (int i = 0; i < Math.min(mergedInfos.size(), 10); i++) {
             Map<String, Object> mergedInfo = mergedInfos.get(i);
-            String view = getStringValue(mergedInfo.get("view"), 3);
+            String view = getStringValue(mergedInfo.get("view"), 5);
             nutTop10v.add(view);
         }
         model.addAttribute("nutTop10v", nutTop10v);
@@ -732,7 +758,71 @@ public class AdminController {
         return "admin/AdminIssue";
     }
     
-    
+    ////////////////////////////////////////////질병예측 결과 관리
+    @GetMapping("/AdminPredict.do")
+	public String adminPredict(Model model) {
+    	
+    	// 분석 정보 가져오기
+    	List<Map<String, Object>> analyzeInfo = adminMapper.getInfoFromPredictTable();
+    	
+    	// 현재 날짜를 가져와서 연령 계산에 사용합니다.
+        LocalDate currentDate = LocalDate.now();
+        
+        // SimpleDateFormat을 이용해 날짜 포맷 지정
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        for (Map<String, Object> row : analyzeInfo) {
+        	
+        	// 행에서 분석일 정보를 추출합니다.
+            Timestamp analyzedTimestamp = (Timestamp) row.get("P_DATE");
+            if (analyzedTimestamp != null) {
+                // Timestamp를 Date로 변환하고, 시분초를 제외한 날짜 문자열로 변환합니다.
+                String analyzedDate = dateFormat.format(analyzedTimestamp);
+
+                // 분석일 정보를 해당 행의 맵에 추가합니다.
+                row.put("P_DATE", analyzedDate);
+            }
+            
+            // 행에서 생년월일 정보를 추출합니다.
+            Timestamp birthTimestamp = (Timestamp) row.get("BIRTH");
+            if (birthTimestamp != null) {
+            	
+                // Timestamp를 Date로 변환합니다.
+                Date birthDate = new Date(birthTimestamp.getTime());
+
+                // 생년월일을 LocalDate로 변환합니다.
+                LocalDate birthLocalDate = birthDate.toLocalDate();
+
+                // 나이 계산
+                int age = Period.between(birthLocalDate, currentDate).getYears();
+
+                // 연령대 그룹화
+                String ageRange;
+                if (age < 20) {
+                    ageRange = "20대 미만";
+                } else if (age >= 20 && age < 30) {
+                    ageRange = "20대";
+                } else if (age >= 30 && age < 40) {
+                    ageRange = "30대";
+                } else if (age >= 40 && age < 50) {
+                    ageRange = "40대";
+                } else if (age >= 50 && age < 60) {
+                    ageRange = "50대";
+                } else {
+                    ageRange = "60대 이상";
+                }
+
+                // 연령대 정보를 해당 행의 맵에 추가합니다.
+                row.put("AGE_RANGE", ageRange);
+            }
+            
+             
+        }
+
+        model.addAttribute("analyzeInfo", analyzeInfo);
+    	
+    	return "admin/AdminPredict";
+    }
     
     
     

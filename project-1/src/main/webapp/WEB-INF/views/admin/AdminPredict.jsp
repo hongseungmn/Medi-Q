@@ -225,7 +225,7 @@
 	        		</a>
 	        	</li>
 	        	<li>
-	        		<a href="<c:url value="/AdminPredict.do"/>" style="display: flex; align-items: center;">
+	        		<a href="<c:url value="/AdminMain.do"/>" style="display: flex; align-items: center;">
 	        			<i class="fas fa-heartbeat" style="font-size:17px; color:white; display: flex; align-items: center; justify-content: center;"></i>
 	        			&nbsp;&nbsp;질병예측 결과 통계
 	        		</a>
@@ -241,14 +241,14 @@
 		<!-- 전체 내용 -->
 	    <div id="admin_content" style="display: flex; justify-content:center; flex-wrap: wrap;">
 			
-			<h4 class="text-center" style="width:95%; padding-bottom: 20px; border-bottom: 1px solid #ccc;"><b>영양제 분석 통계</b></h4>
+			<h4 class="text-center" style="width:95%; padding-bottom: 20px; border-bottom: 1px solid #ccc;"><b>질병예측 결과 통계</b></h4>
 	    
 	    	<!-- 1번 div -->
 	        <div class="each-container">
 		        <!-- 도표1: 라인 차트 -->
 				<div class="chart-container" style="margin-bottom: 50px; height: 650px;">
-					<p class="text-center" style="font-size: 16px;"><b>연령대별 건강고민 통계</b></p>
-					<div id="myDiv" style="margin-left: 19px;"></div><!-- style="height: 550px; width: 570px;" -->
+					<p class="text-center" style="font-size: 16px;"><b>연령대별 예측확률 통계</b></p>
+					<canvas id="chart" style="width:608px; height:562px;"></canvas><!-- style="height: 550px; width: 570px;" -->
 				</div>
 			</div>
 	    	
@@ -256,7 +256,7 @@
 			<div class="each-container">
 				<!-- 회원테이블 -->
 		        <div class="chart-container table-wrapper" style="height: 650px;">
-		        	<p class="text-center" style="font-size: 16px;"><b>분석결과 목록</b></p>
+		        	<p class="text-center" style="font-size: 16px;"><b>예측결과 목록</b></p>
 		        	<div class="table-wrapper" style="height: 531px; overflow-y: auto; padding-right: 5px;">
 					    <table>
 					        <thead>
@@ -264,8 +264,8 @@
 				                	<th style="width:40px;">번호</th>
 				                    <th style="width:90px;">아이디</th>
 				                    <th style="width:65px;">연령대</th>
-				                    <th style="width:200px;">선택 건강고민</th>
-				                    <th style="width:40px;">점수</th>
+				                    <th style="width:100px;">선택 질병예측</th>
+				                    <th style="width:65px;">예측 확률</th>
 				                    <th style="width:75px;">분석일</th>
 				                </tr>
 				            </thead>
@@ -273,11 +273,20 @@
 						        <c:forEach var="info" items="${analyzeInfo }" varStatus="loop">
 							        <tr>
 							        	<td>${loop.count}</td>
-							            <td>${info.USERID}</td>
+							            <td>${info.ID}</td>
 							            <td>${info.AGE_RANGE}</td>
-							            <td>${info.TAKEPURPOSES}</td>
-							            <td>${info.SCORE}</td>
-							            <td>${info.ANALYZEDATE}</td>
+							            <td data-disease="${info.P_DISEASE}">
+						                    <c:choose>
+						                        <c:when test="${info.P_DISEASE == 'Diabetes'}">당뇨병</c:when>
+						                        <c:when test="${info.P_DISEASE == 'Cardiovascular'}">심혈관질환</c:when>
+						                        <c:when test="${info.P_DISEASE == 'SkinLesion'}">피부질환</c:when>
+						                        <c:when test="${info.P_DISEASE == 'Stroke'}">뇌졸중</c:when>
+						                        <c:when test="${info.P_DISEASE == 'LungCancer'}">폐암</c:when>
+						                        <c:when test="${info.P_DISEASE == 'Parkinson'}">파킨슨병</c:when>
+						                    </c:choose>
+						                </td>
+							            <td>${info.P_RESULT}</td>
+							            <td>${info.P_DATE}</td>
 							        </tr>
 						        </c:forEach>
 					        </tbody>
@@ -290,90 +299,117 @@
 	</div><!-- 컨테이너 -->
 	
     <script>
-	    
-	    const selectionCountDataJson = JSON.parse('${selectionCountDataJson}');
+	    // DOM이 로드될 때 실행되는 함수
+	    document.addEventListener("DOMContentLoaded", function() {
+	        // 질병들의 목록
+	        var diseasesOrder = ['당뇨병', '심혈관질환', '파킨슨병', '뇌졸중', '피부질환', '폐암'];
 	
-	    const labels = ["20대 미만", "20대", "30대", "40대", "50대", "60대 이상"];
+	        // 데이터셋 초기화
+	        var datasets = {};
 	
-	    var healthIssues = [
-	        "피로감", "스트레스 & 수면", "노화 & 항산화", "면역 기능", "빈혈", "눈 건강", "갑상선 건강", "호흡기 건강",
-	        "소화 & 위식도 건강", "간 건강", "장 건강", "뼈 건강", "관절 건강", "탈모 & 손톱 건강", "피부 건강",
-	        "두뇌활동", "운동 능력 & 근육량", "혈압", "혈당", "혈관 & 혈액순환", "혈중 중성지방", "혈중 콜레스테롤",
-	        "체지방", "치아 & 잇몸", "남성 건강", "여성 건강", "임산부 & 태아 건강", "여성 갱년기"
-	    ];
-	
-	    healthIssues = healthIssues.reverse(); // 역순 재배치
-	
-	    var traces = [];
-	    
-	    labels.forEach(function(label, index) {
-	        var x = [];
-	        var y = [];
-	        var markerSize = [];
-	        var colors = [];
-	        var colorscale = [
-	            [0, 'rgb(0, 128, 255)'],
-	            [0.5, 'rgb(102, 255, 178)'],
-	            [1, 'rgb(255, 0, 0)']
-	        ];
-
-	        healthIssues.forEach(function (issue) {
-	            var count = (selectionCountDataJson[label] && selectionCountDataJson[label][issue]) || 0;
-	            x.push(label);
-	            y.push(issue);
-	            markerSize.push(count);
-	            colors.push(count);
+	        // 각 질병별 데이터셋을 초기화
+	        diseasesOrder.forEach(disease => {
+	            datasets[disease] = {};
 	        });
-	        
-	        var maxCount = Math.max(...colors); // Calculate maxCount after colors have been populated
-
-	        traces.push({
-	            x: x,
-	            y: y,
-	            mode: 'markers',
-	            marker: {
-	                size: markerSize,
-	                sizemode: 'area',
-	                sizeref: 0.01,
-	                color: colors,
-	                colorscale: colorscale,
-	                colorbar: {
-	                    title: '빈도',
-	                    thickness: 20, // reduce colorbar thickness
-	                    len: 0.5,
-	                    tickvals: [Math.min(...colors), maxCount], // specify tick positions
-	                    ticktext: [Math.min(...colors), maxCount], // specify tick labels
-	                    showticklabels: false, // Add this line to hide the numeric labels
-	                },
-	                cmin: Math.min(...colors),
-	                cmax: maxCount
-	            },
-	            hovertemplate: '%{y}, 선택 수: %{marker.size}<extra></extra>',
+	
+	        // 연령대 구분
+	        var ageRanges = ['20대 미만', '20대', '30대', '40대', '50대', '60대 이상'];
+	
+	        // 각 질병별 연령대 데이터 초기화
+	        Object.keys(datasets).forEach(disease => {
+	            ageRanges.forEach(ageRange => {
+	                datasets[disease][ageRange] = {
+	                    count: 0,
+	                    total: 0
+	                };
+	            });
+	        });
+	
+	        // HTML 테이블에서 데이터 가져오기
+	        var dataFromServer = document.querySelectorAll("tbody tr");
+	
+	        // 각 행별로 데이터 처리
+	        dataFromServer.forEach(function(row) {
+	            // 질병 코드로부터 질병 이름 매핑
+	            var diseaseCode = row.children[3].getAttribute('data-disease');
+	            var disease;
+	
+	            switch (diseaseCode) {
+	                case 'Diabetes':
+	                    disease = '당뇨병';
+	                    break;
+	                case 'Cardiovascular':
+	                    disease = '심혈관질환';
+	                    break;
+	                case 'SkinLesion':
+	                    disease = '피부질환';
+	                    break;
+	                case 'Stroke':
+	                    disease = '뇌졸중';
+	                    break;
+	                case 'LungCancer':
+	                    disease = '폐암';
+	                    break;
+	                case 'Parkinson':
+	                    disease = '파킨슨병';
+	                    break;
+	            }
+	
+	         	// 연령대와 확률 값 추출
+	            var ageRange = row.children[2].textContent;
+	            var probability = parseFloat(row.children[4].textContent);
+	
+	            // 해당 질병과 연령대의 카운트와 총 합 업데이트
+	            datasets[disease][ageRange].count++;
+	            datasets[disease][ageRange].total += probability;
+	        });
+	
+	        // 각 질병별 연령대의 평균 확률 계산
+	        Object.keys(datasets).forEach(function(disease) {
+	            Object.keys(datasets[disease]).forEach(function(ageRange) {
+	                datasets[disease][ageRange] = (datasets[disease][ageRange].total || 0) / datasets[disease][ageRange].count;
+	            });
+	        });
+	
+	        // 차트를 그리기 위한 설정
+	        var ctx = document.getElementById('chart').getContext('2d');
+	        var colors = [
+	        	'rgba(255, 99, 132, 0.6)',
+		        'rgba(54, 162, 235, 0.6)',
+		        'rgba(255, 206, 86, 0.6)',
+		        'rgba(75, 192, 192, 0.6)',
+		        'rgba(153, 102, 255, 0.6)',
+		        'rgba(255, 159, 64, 0.6)'
+		        ];
+	
+	     	// 차트 데이터 설정
+	        var chartData = {
+	            labels: ageRanges,
+	            datasets: Object.keys(datasets).map(function(disease, idx) {
+	                return {
+	                    label: disease,
+	                    data: ageRanges.map(function(ageRange) {
+	                        return datasets[disease][ageRange] || 0;
+	                    }),
+	                    fill: false
+	                };
+	            })
+	        };
+	
+	     	// 차트 생성
+	        var chart = new Chart(ctx, {
+	            type: 'line',
+	            data: chartData,
+	            options: {
+	                scales: {
+	                    y: {
+	                        beginAtZero: true
+	                    }
+	                }
+	            }
 	        });
 	    });
 
-	    var layout = {
-	        showlegend: false,
-	        hovermode: 'closest',
-	        height: 550,
-	        width: 570,
-	        margin: {
-	            l: 100,
-	            r: 20,
-	            t: 0,
-	            b: 25
-	        },
-	        yaxis: {
-	            tickfont: {
-	                size: 10
-	            }
-	        },
-	        coloraxis: {colorbar: {title: 'Counts'}}
-	    };
-
-	    Plotly.newPlot('myDiv', traces, layout);
-	     
-        
     </script>
 </body>
 </html>
