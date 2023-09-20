@@ -1,4 +1,4 @@
-﻿package com.kosmo.springapp.qnabbs.service;
+package com.kosmo.springapp.qnabbs.service;
 
 import java.util.Map;
 
